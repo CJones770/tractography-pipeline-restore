@@ -37,7 +37,7 @@ RUN git clone -b $MRTRIX3_GIT_COMMITISH --depth 1 https://github.com/MRtrix3/mrt
 FROM base-builder as fsl-installer
 RUN mkdir -p /opt/Pipeline
 WORKDIR /opt/Pipeline
-RUN git clone -b Pipeline_docker https://github.com/CJones770/tractography-pipeline-restore Pipeline 
+RUN git clone -b Pipeline2 https://github.com/CJones770/tractography-pipeline-restore Pipeline 
 WORKDIR /opt/fsl
 RUN curl -fsSL https://github.com/CJones770/tractography-pipeline-restore/raw/main/fsl6.0.5mm.tar.gz \
 | tar xz --strip-components 1
