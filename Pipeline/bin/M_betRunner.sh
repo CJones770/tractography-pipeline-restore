@@ -11,6 +11,6 @@ i=0
 while [ "$(( i += 1 ))" -le $arrSize ]
 do
 zi=$( printf '%02d' "$i")
-bet ~/Pipeline/Stg2Tmp/sub_$zi/DNDG_hifi_images.nii.gz ~/Pipeline/Stg2Tmp/sub_$zi/DNDG_brain_mask_output
+bet /opt/Pipeline/Pipeline/Pipeline/Stg2Tmp/sub_$zi/DNDG_hifi_images.nii.gz /opt/Pipeline/Pipeline/Pipeline/Stg2Tmp/sub_$zi/DNDG_brain_mask_output
 done
 echo "masks generated for $arrSize subjects. Ready for Eddy."

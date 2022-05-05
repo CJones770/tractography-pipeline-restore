@@ -8,8 +8,8 @@ echo "Clearing stage 1 temp folder..."
 while [ "$(( i += 1 ))" -le $arrSize ]
 do
 zi=$( printf '%02d' "$i")
-rm ~/Pipeline/Stg1Tmp/sub_$zi/*
-rmdir ~/Pipeline/Stg1Tmp/sub_$zi/
-rmdir ~/Pipeline/Stg1Tmp/
+rm /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/*
+rmdir /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/
+rmdir /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/
 done
 echo "stage 1 temp folder cleared"
