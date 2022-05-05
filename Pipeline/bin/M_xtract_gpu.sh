@@ -15,10 +15,11 @@ now=$(date +"%T")
 echo "Current time : $now"
 zi=$( printf '%02d' "$i")
 echo "----- Subject ID $zi -----"
-xtract -bpx ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_$zi.bedpostX -out $2/sub_$zi/XtractOut_$zi -species HUMAN \
--stdwarp ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/standard2diff_warp.nii.gz ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2standard_warp.nii.gz \
--ref /usr/local/fsl/data/standard/MNI152_T1_1mm_brain ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2standard_warp.nii.gz \
-~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/standard2diff_warp.nii.gz -gpu #-ptx_options ~/Pipeline/TractographyOptions/ptx_options.txt #-str ~/Pipeline/scripts/Stg4/structs.txt 
+xtract -bpx /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_$zi.bedpostX -out $2/sub_$zi/XtractOut_$zi -species HUMAN \
+-stdwarp /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/standard2diff_warp.nii.gz \
+/opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2standard_warp.nii.gz \
+-ref /opt/fsl/data/standard/MNI152_T1_1mm_brain /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2standard_warp.nii.gz \
+/opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/standard2diff_warp.nii.gz -gpu #-ptx_options ~/Pipeline/TractographyOptions/ptx_options.txt #-str ~/Pipeline/scripts/Stg4/structs.txt 
 now=$(date +"%T")
 echo "Current time : $now"
 echo "Tractography complete for subject $zi"

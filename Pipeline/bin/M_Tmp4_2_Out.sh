@@ -14,10 +14,10 @@ do
 	mkdir $2/sub_$zi/BedpostX_"$zi".bedpostX/xfms/
 	mkdir $2/sub_$zi/BedpostX_"$zi".bedpostX/logs/
 	mkdir $2/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps
-	cp ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi"/* $2/sub_$zi/BedpostX_"$zi"/
-	cp ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/* $2/sub_$zi/BedpostX_"$zi".bedpostX/
-	cp ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/* $2/sub_$zi/BedpostX_"$zi".bedpostX/xfms/
-	cp ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/logs/* $2/sub_$zi/BedpostX_"$zi".bedpostX/logs/
-	cp ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps/* $2/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps/
+	cp /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi"/* $2/sub_$zi/BedpostX_"$zi"/
+	cp /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/* $2/sub_$zi/BedpostX_"$zi".bedpostX/
+	cp /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/* $2/sub_$zi/BedpostX_"$zi".bedpostX/xfms/
+	cp /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/logs/* $2/sub_$zi/BedpostX_"$zi".bedpostX/logs/
+	cp /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps/* $2/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps/
 done
 echo "Stage 4 temp folder contents copied for $arrSize subjects."

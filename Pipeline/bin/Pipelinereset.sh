@@ -6,7 +6,7 @@ echo "Clearing pipeline of temporarily stored values..."
 while [ "$(( i += 1 ))" -le $arrSize ]
 do
 zi=$( printf '%02d' "$i")
-rm -r ~/Pipeline/ACQP/sub_$zi/*
-rmdir ~/Pipeline/ACQP/sub_$zi/
+rm -r /opt/Pipeline/Pipeline/Pipeline/ACQP/sub_$zi/*
+rmdir /opt/Pipeline/Pipeline/Pipeline/ACQP/sub_$zi/
 done
 echo "Values removed: Pipeline ready for next cohort"
