@@ -1,6 +1,6 @@
 #!/bin/bash
 FSLDIR=/usr/local/fsl 
-. ${FSLDIR}/etc/fslconf/fsl.sh
+#. ${FSLDIR}/etc/fslconf/fsl.sh
 PATH=${FSLDIR}/bin:${PATH}
 export FSLDIR PATH
 

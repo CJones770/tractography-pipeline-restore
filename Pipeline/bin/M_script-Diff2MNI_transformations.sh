@@ -1,0 +1,159 @@
+#!/bin/bash
+#specify full path to subject directory e.g., /home/user/SubjectDirectory
+#specify root as follows: /home/user
+SubjectDirectory=$1
+root=$2
+calculate_transf () {
+  # LINEAR TRANSFOMATION FROM DIFFUSION TO T1 SPACE
+  echo "LINEAR TRANSFOMATION FROM DIFFUSION TO T1 SPACE"
+  /usr/local/fsl/bin/flirt -in ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/nodif_brain \
+  -ref ~/Pipeline/Stg3Tmp/sub_$zi/sub-"$zi"_T1bet.nii.gz \
+  -omat ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2str.mat \
+  -searchrx -90 90 -searchry -90 90 -searchrz -90 90 -dof 6 -cost corratio
+
+  # INVERSE LINEAR TRANSFOMATION FROM T1 SPACE TO DIFFUSION
+  echo "INVERSE LINEAR TRANSFOMATION FROM T1 SPACE TO DIFFUSION"
+  /usr/local/fsl/bin/convert_xfm -omat ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/str2diff.mat \
+-inverse ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2str.mat 
+
+  # LINEAR TRANSFOMATION FROM T1 SPACE TO MNI (TEMPLATE)
+  echo "LINEAR TRANSFOMATION FROM T1 SPACE TO MNI (TEMPLATE)"
+  /usr/local/fsl/bin/flirt -in ~/Pipeline/Stg3Tmp/sub_$zi/sub-"$zi"_T1bet.nii.gz \
+  -ref /usr/local/fsl/data/standard/MNI152_T1_2mm_brain \
+  -omat ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/str2standard.mat \
+  -searchrx -90 90 -searchry -90 90 -searchrz -90 90 -dof 12 -cost corratio
+
+  # INVERSE LINEAR TRANSFORMATION FROM MNI TO T1 SPACE
+  echo "INVERSE LINEAR TRANSFORMATION FROM MNI TO T1 SPACE"
+  /usr/local/fsl/bin/convert_xfm -omat ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/standard2str.mat \
+  -inverse ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/str2standard.mat
+
+  # LINEAR TRANSFORMATION FROM DIFFUSION TO MNI (DIFF TO T1 --> T1 TO MNI )
+  echo "LINEAR TRANSFORMATION FROM DIFFUSION TO MNI (DIFF TO T1 --> T1 TO MNI )"
+  /usr/local/fsl/bin/convert_xfm -omat ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2standard.mat \
+  -concat ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/str2standard.mat ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2str.mat
+
+  # INVERSE LINEAR TRANSFORMATION FROM MNI TO DIFFUSION (DIFF TO T1 --> T1 TO MNI )
+  echo "INVERSE LINEAR TRANSFORMATION FROM MNI TO DIFFUSION (DIFF TO T1 --> T1 TO MNI )"
+  /usr/local/fsl/bin/convert_xfm -omat ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/standard2diff.mat \
+  -inverse ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2standard.mat 
+
+  # NON-LINEAR TRANSFORMATION FROM T1 SPACE TO MNI
+  echo "NON-LINEAR TRANSFORMATION FROM T1 SPACE TO MNI"
+  /usr/local/fsl/bin/fnirt --in=$1/sub_$zi/anat/sub-"$zi"_T1w.nii.gz \
+--aff=$2/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/str2standard.mat \
+--cout=$2/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/str2standard_warp \
+--config=T1_2_MNI152_2mm
+
+  # INVERSE NON-LINEAR TRANSFORMATION FROM MNI TO T1 SPACE
+  echo "INVERSE NON-LINEAR TRANSFORMATION FROM MNI TO T1 SPACE"
+  /usr/local/fsl/bin/invwarp -w ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/str2standard_warp \
+  -o ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/standard2str_warp \
+  -r ~/Pipeline/Stg3Tmp/sub_$zi/sub-"$zi"_T1bet.nii.gz
+
+  # WARP FROM DIFFUSION TO MNI
+  echo "WARP FROM DIFFUSION TO MNI"
+  /usr/local/fsl/bin/convertwarp -o ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2standard_warp \
+  -r /usr/local/fsl/data/standard/MNI152_T1_2mm -m ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2str.mat \
+  -w ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/str2standard_warp
+
+  # WARP FROM MNI TO DIFFUSION
+  echo "WARP FROM MNI TO DIFFUSION"
+  /usr/local/fsl/bin/convertwarp -o ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/standard2diff_warp \
+  -r ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/nodif_brain_mask \
+  -w ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/standard2str_warp \
+  --postmat=$2/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/str2diff.mat
+}
+
+apply_transf (){
+
+  #T1 TO TEMPLATE (LINEAR + NON-LINEAR)
+  echo "T1 TO TEMPLATE (LINEAR + NON-LINEAR)"
+  applywarp -i $1/sub_$zi/anat/sub-"$zi"_T1w.nii.gz \
+  -w ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/str2standard_warp.nii.gz \
+  -r /usr/local/fsl/data/standard/MNI152_T1_2mm.nii.gz \
+  -o ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps/t1_in_MNI
+
+  #T1 BETTED TO TEMPLATE (LINEAR + NON-LINEAR)
+  echo "T1 BETTED TO TEMPLATE (LINEAR + NON-LINEAR)"
+  applywarp -i ~/Pipeline/Stg3Tmp/sub_$zi/sub-"$zi"_T1bet.nii.gz \
+  -w ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/str2standard_warp.nii.gz \
+  -r /usr/local/fsl/data/standard/MNI152_T1_2mm.nii.gz \
+  -o ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps/t1_brain_in_MNI
+
+  #T1 TO TEMPLATE (LINEAR) 2mm and 1mm
+  echo "T1 TO TEMPLATE (LINEAR) 2mm and 1mm"
+  flirt -in $1/sub_$zi/anat/sub-"$zi"_T1w.nii.gz \
+  -ref /usr/local/fsl/data/standard/MNI152_T1_2mm.nii.gz \
+  -applyxfm -init ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/str2standard.mat \
+  -out ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps/t1_linear_to_MNI_2mm
+
+  flirt -in $1/sub_$zi/anat/sub-"$zi"_T1w.nii.gz \
+  -ref /usr/local/fsl/data/standard/MNI152_T1_1mm.nii.gz \
+  -applyxfm -init ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/str2standard.mat \
+  -out ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps/t1_linear_to_MNI_1mm
+
+  #T1 BETTED TO TEMPLATE (LINEAR) 2mm and 1mm
+  echo "T1 BETTED TO TEMPLATE (LINEAR) 2mm and 1mm"
+  flirt -in ~/Pipeline/Stg3Tmp/sub_$zi/sub-"$zi"_T1bet.nii.gz \
+  -ref /usr/local/fsl/data/standard/MNI152_T1_2mm.nii.gz \
+  -applyxfm -init ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/str2standard.mat \
+  -out ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps/t1_brain_linear_to_MNI_2mm
+
+  flirt -in ~/Pipeline/Stg3Tmp/sub_$zi/sub-"$zi"_T1bet.nii.gz \
+  -ref /usr/local/fsl/data/standard/MNI152_T1_1mm.nii.gz \
+  -applyxfm -init ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/str2standard.mat \
+  -out ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps/t1_brain_linear_to_MNI_1mm
+
+  #DIFFUSION TO T1 (LINEAR)
+  echo "DIFFUSION TO T1 (LINEAR)"
+  flirt -in ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/nodif_brain.nii.gz \
+-ref ~/P_samples/sub_$zi/anat/sub-"$zi"_T1w.nii.gz \
+-init ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2str.mat \
+-out ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps/diff_to_T1
+
+  #DIFFUSION TO T1 (LINEAR)
+  echo "DIFFUSION TO T1 (LINEAR)"
+  flirt -in ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/nodif_brain.nii.gz \
+-ref ~/Pipeline/Stg3Tmp/sub_$zi/sub-"$zi"_T1bet.nii.gz \
+-applyxfm -init ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2str.mat \
+-out ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps/diff_to_T1_brain
+
+
+  #DIFFUSION TO TEMPLATE (LINEAR + NON-LINEAR)
+  echo "DIFFUSION TO TEMPLATE (LINEAR + NON-LINEAR)"
+  applywarp -i ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/nodif_brain.nii.gz \
+  -w ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2standard_warp.nii.gz \
+  -r /usr/local/fsl/data/standard/MNI152_T1_2mm.nii.gz \
+  -o ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps/nodif_brain_in_MNI
+}
+
+arrSize=`ls $1 | wc -l`
+i=0
+now=$(date +"%T")
+echo "Starting time : $now"
+echo "Running registration for $arrSize subjects...."
+while [ "$(( i += 1 ))" -le $arrSize ]
+do
+zi=$( printf '%02d' "$i")
+cp ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi"/nodif_brain.nii.gz ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/nodif_brain.nii.gz
+echo "----- Subject ID $zi -----"
+echo "Calculating transformations...."
+
+now=$(date +"%T")
+echo "Current time : $now"
+calculate_transf $1 $2
+echo ""
+echo "Tranforming Files ...."
+
+mkdir -p ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps #$session/BEDPOSTX.bedpostX/xfms/test_warps
+
+now=$(date +"%T")
+echo "Current time : $now"
+apply_transf $1
+done
+
+now=$(date +"%T")
+echo "Finishing time : $now"
+
+

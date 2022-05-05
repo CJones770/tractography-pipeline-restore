@@ -1,6 +1,6 @@
 #!/bin/bash
 FSLDIR=/usr/local/fsl 
-. ${FSLDIR}/etc/fslconf/fsl.sh
+#. ${FSLDIR}/etc/fslconf/fsl.sh
 PATH=${FSLDIR}/bin:${PATH}
 export FSLDIR PATH
 SubjectDirectory=$1
@@ -29,7 +29,7 @@ fslroi /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/d107-AP_DNDG.nii.gz /opt/
 fslroi /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/d107-AP_DNDG.nii.gz /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tAP_b0_5 49 1
 fslroi /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/d107-AP_DNDG.nii.gz /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tAP_b0_6 65 1
 fslroi /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/d107-AP_DNDG.nii.gz /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tAP_b0_7 81 1
-	#average b0 volumes
+#average b0 volumes
 fslmaths /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tPA_b0_1 -add /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tPA_b0_2 -add /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tPA_b0_3 \
 -add /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tPA_b0_4 -add /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tPA_b0_5 -add /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tPA_b0_6 \
 -add /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tPA_b0_7 /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tPA_sum.nii.gz 
