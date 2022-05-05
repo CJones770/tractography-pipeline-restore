@@ -13,7 +13,7 @@ XtractOutDir=$7
 now=(date +"%T")
 echo "Pipeline starting at $now : Estimated total runtime is approximately 1 hour and 50 minutes per subject."
 #Stage 1
-cd $2/Pipeline/scripts/Stg1
+cd /opt/Pipeline/Pipeline/Pipeline/bin
 ./DirectoryInitializer_Sub.sh $3 $4 $5 $6 $7 $1 #Initialize Acq params, Temp, Output, and BedpostX Directories
 ./min_M_acqp_initializer.sh $1 #Copy subject acquisition parameters [bval, bvec, acquisition_parameters.txt] into respective ~/Pipeline/ACQP/sub_##/ directories
 ./M_dwi_denoise.sh $1 #Run MP-PCA denoising [Targets only Gaussian Noise]

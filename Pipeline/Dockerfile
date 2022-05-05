@@ -33,21 +33,15 @@ RUN git clone -b $MRTRIX3_GIT_COMMITISH --depth 1 https://github.com/MRtrix3/mrt
     && rm -rf tmp
 #RUN curl -fsSL https://github.com/CJones770/tractography-pipeline-restpre/raw/main/reducedmrtrix
 
-# Download minified FSL (6.0.5)
+# Download minified FSL (6.0.5) and Pipeline directory (1.0.0)
 FROM base-builder as fsl-installer
-#Download Pipeline Directories
-#FROM builder as pipe-installer
 RUN mkdir -p /opt/Pipeline
 WORKDIR /opt/Pipeline
-RUN wget https://github.com/CJones770/tractography-pipeline-restore/raw/main/Pipeline4.tar.gz \
-| tar xvf Pipeline4.tar.gz -C /Pipeline --strip-components 1
+RUN git clone -b Pipeline_docker https://github.com/CJones770/tractography-pipeline-restore Pipeline 
 WORKDIR /opt/fsl
 RUN curl -fsSL https://github.com/CJones770/tractography-pipeline-restore/raw/main/fsl6.0.5mm.tar.gz \
 | tar xz --strip-components 1
 
-#FROM base-builder as pipe-installer
-#WORKDIR /Pipeline
-#RUN gunzip -f -v /Pipeline/Pipeline4.tar.gz
 # Build final image.
 FROM base AS final
 
@@ -80,7 +74,7 @@ ENV FSLDIR="/opt/fsl" \
     FSLTCLSH="/opt/fsl/bin/fsltclsh" \
     FSLWISH="/opt/fsl/bin/fslwish" \
     LD_LIBRARY_PATH="/opt/fsl/lib:$LD_LIBRARY_PATH" \
-    PATH="/opt/mrtrix3/bin:/opt/fsl/bin:/opt/Pipeline/bin:$PATH"
+    PATH="/opt/mrtrix3/bin:/opt/fsl/bin:/opt/Pipeline/Pipeline/Pipeline/bin:$PATH"
 
 WORKDIR /work
 CMD ["/bin/bash"]
