@@ -22,7 +22,7 @@ cd /opt/Pipeline/Pipeline/Pipeline/bin
 ./best_b0_tester.sh $1 $3 #Compare residuals from previous step to choose best b0 volumes
 ./min_M_Tmp1_2_Out.sh $1 $3 #Move Temp outputs of interest to specified output directory #1 [Stg1Out]
 #Stage 2
-cd $2/Pipeline/scripts/Stg2
+#cd $2/Pipeline/scripts/Stg2
 ./min_M_topup.sh $1 $2 #Correct for EPI distortions
 ./min_applytopup.sh $1 $2 #Apply correcting warp fields
 ./M_betRunner.sh $1 #Extract intermediate brain mask for eddy correction 
@@ -31,14 +31,14 @@ cd $2/Pipeline/scripts/Stg2
 ./eddy_quad_runner.sh $1 $4 #Quality control report stored in specified output directory #2 [Stg2Out]
 ./M_Tmp2_2_Out.sh $1 $4 #Move Temp outputs of interest to specified output directory #2 [Stg2Out]
 #Stage 3
-cd $2/Pipeline/scripts/Stg3
+#cd $2/Pipeline/scripts/Stg3
 ./M_nodif_brain_maker.sh $1 #Average b0 volumes from outlier free eddy corrected data
 ./M_FSLmathsRunner.sh $1 #Smooths outlier free eddy corrected data with 1mm^3 gaussian kernel 
 ./M_smoothed_nodif_brainmaker.sh $1 #Average b0 volumes from smoothed outlier free eddy corrected data
 ./M_T1Better.sh $1 #Create anatomical brain mask
 ./M_Tmp3_2_Out.sh $1 $5 #Move Temp outputs of interest to specified output directory #3 [Stg3Out]
 #Stage 4
-cd $2/Pipeline/scripts/Stg4
+#cd $2/Pipeline/scripts/Stg4
 ./M_bedpostXRunner.sh $1 #Estimate Diffusion Tensors
 ./Tmp2clear.sh $1 #Clear Stg2Tmp Folder
 ./M_script-Diff2MNI_transformations.sh $1 $2 #Perform nonlinear anatomical registration of diffusion data
