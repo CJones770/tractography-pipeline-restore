@@ -1,5 +1,4 @@
 #!/bin/bash
-
 SubjectDirectory=$1
 Stg2Out=$2
 arrSize=`ls $1 | wc -l`

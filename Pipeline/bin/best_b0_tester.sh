@@ -1,12 +1,4 @@
 #!/bin/bash
-FSLDIR=/usr/local/fsl 
-#. ${FSLDIR}/etc/fslconf/fsl.sh
-PATH=${FSLDIR}/bin:${PATH}
-export FSLDIR PATH
-
-#fslmaths ~/Pipeline/Stg1Tmp/sub_02/tAP_b0_1_rsqr.nii.gz -Xmean -Ymean -Zmean ~/Pipeline/Stg1Tmp/sub_02/TAP_b01_XYZMEAN.nii.gz
-#fslmaths ~/Pipeline/Stg1Tmp/sub_02/tAP_b0_1_rsqr.nii.gz -Xstd -Ystd -Zstd ~/Pipeline/Stg1Tmp/sub_02/TAP_b01_XYZSTD.nii.gz
-#XYZSTD >> XYZMEAN
 SubjDirectory=$1
 Out1Dir=$2
 arrSize=`ls $1 | wc -l`

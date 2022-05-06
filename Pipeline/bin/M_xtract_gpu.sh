@@ -1,9 +1,4 @@
 #!/bin/bash
-FSLDIR=/usr/local/fsl 
-. ${FSLDIR}/etc/fslconf/fsl.sh
-PATH=${FSLDIR}/bin:${PATH}
-export FSLDIR PATH
-
 SubjectDirectory=$1
 XtractOutDir=$2
 arrSize=`ls $1 | wc -l`
@@ -19,11 +14,11 @@ xtract -bpx /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_$zi.bedpost
 -stdwarp /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/standard2diff_warp.nii.gz \
 /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2standard_warp.nii.gz \
 -ref /opt/fsl/data/standard/MNI152_T1_1mm_brain /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2standard_warp.nii.gz \
-/opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/standard2diff_warp.nii.gz -gpu #-ptx_options ~/Pipeline/TractographyOptions/ptx_options.txt #-str ~/Pipeline/scripts/Stg4/structs.txt 
+/opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/standard2diff_warp.nii.gz -gpu #-ptx_options [path-to]/Pipeline/TractographyOptions/ptx_options.txt #-str [path to specific structures] e.g., ~/Pipeline/scripts/Stg4/structs.txt 
 now=$(date +"%T")
 echo "Current time : $now"
 echo "Tractography complete for subject $zi"
 done
 now=$(date +"%T")
 echo "Finishing time : $now"
-#uncomment above to run different tractography parameters, e.g., angular or fiber density stopping thresholds or on a specified set of structures
+

@@ -1,7 +1,5 @@
 #!/bin/bash
-
 SubjectDirectory=$1
-
 arrSize=`ls $1 | wc -l`
 i=0
 echo "Clearing stage 3 temp folder..."

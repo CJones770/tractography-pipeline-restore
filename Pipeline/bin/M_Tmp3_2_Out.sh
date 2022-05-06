@@ -1,8 +1,6 @@
 #!/bin/bash
-
 SubjectDirectory=$1
 OutDir3=$2
-
 echo "Copying Stage 3 temp folder contents to $2 "
 arrSize=`ls $1 | wc -l`
 i=0

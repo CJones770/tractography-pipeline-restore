@@ -1,5 +1,5 @@
 #!/bin/bash
-# ./M_topup.sh SubjectDirectory root e.g., ./M_topup.sh ~/Path_to_Samples /home/user
+# ./M_topup.sh SubjectDirectory e.g., ./M_topup.sh ~/Path_to_Samples 
 SubjectDirectory=$1
 arrSize=`ls $1 | wc -l`
 echo "Beginning topup EPI distorion correction. The number of subjects detected in directory $1 is $arrSize ."
