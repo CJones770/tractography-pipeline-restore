@@ -2,7 +2,6 @@
 #specify full path to subject directory e.g., /home/user/SubjectDirectory
 #specify root as follows: /home/user
 SubjectDirectory=$1
-root=$2
 calculate_transf () {
   # LINEAR TRANSFOMATION FROM DIFFUSION TO T1 SPACE
   echo "LINEAR TRANSFOMATION FROM DIFFUSION TO T1 SPACE"
@@ -142,7 +141,7 @@ echo "Calculating transformations...."
 
 now=$(date +"%T")
 echo "Current time : $now"
-calculate_transf $1 $2
+calculate_transf $1
 echo ""
 echo "Tranforming Files ...."
 

@@ -1,8 +1,4 @@
 #!/bin/bash
-mrtrixDIR=/usr/local/anaconda3/pkgs/mrtrix3-3.0.2-h6bb024c_0
-PATH="$(pwd)/bin:$PATH"
-export mrtrixDIR PATH
-
 SubjectDirectory=$1
 #Define Number of Subjects as an Array
 arrSize=`ls $1 | wc -l`
