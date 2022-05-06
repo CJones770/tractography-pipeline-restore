@@ -12,6 +12,8 @@ mkdir /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp
 mkdir /opt/Pipeline/Pipeline/Pipeline/Stg2Tmp
 mkdir /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp
 mkdir /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp
+#The below commented are not needed to run in container given that the outputs directories must be stored as volumes within the container;
+#Therefore they must already exist on the host machine
 #mkdir /opt/Pipeline/Pipeline/Pipeline/$1
 #mkdir /opt/Pipeline/Pipeline/Pipeline/$2
 #mkdir /opt/Pipeline/Pipeline/Pipeline/$3

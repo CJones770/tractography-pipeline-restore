@@ -42,7 +42,7 @@ bestPA_b0=/opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tPA_b0_1.nii.gz
 	echo "$bestPA_b0"
 	fi
 	done
-exec > $2/sub_"$zi"/bestb0log.txt 2>&1
+exec > /$2/sub_"$zi"/bestb0log.txt 2>&1
 echo "Closest matches for subject $zi are: "	
 echo "$bestAPb0res"
 echo "$bestPAb0res"
@@ -50,9 +50,9 @@ echo "$bestPAb0res"
 echo "merging best volumes for subject $zi"
 fslmerge -t /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/AP_PA_TopupInput2Vols.nii.gz $bestAP_b0 $bestPA_b0
 cp $bestAP_b0 /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/BestAP_b0vol.nii.gz
-cp $bestAP_b0 $2/sub_$zi/AP_bestb0.nii.gz
+cp $bestAP_b0 /$2/sub_$zi/AP_bestb0.nii.gz
 cp $bestPA_b0 /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/BestPA_b0vol.nii.gz
-cp $bestPA_b0 $2/sub_$zi/PA_bestb0.nii.gz
+cp $bestPA_b0 /$2/sub_$zi/PA_bestb0.nii.gz
 echo $bestAP_b0
 echo $bestPA_b0
 done

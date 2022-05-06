@@ -10,8 +10,8 @@ Stg2Out=$3
 Stg3Out=$4
 Stg4Out=$5
 XtractOutDir=$6
-now=(date +"%T")
-echo "Pipeline starting at $now : Estimated total runtime is approximately 1 hour and 50 minutes per subject."
+now=$(date +"%T")
+echo "Pipeline starting at $now ."
 #Stage 1
 cd /opt/Pipeline/Pipeline/Pipeline/bin
 ./DirectoryInitializer_Sub.sh $2 $3 $4 $5 $6 $1 #Initialize Acq params, Temp, Output, and BedpostX Directories
@@ -28,7 +28,7 @@ cd /opt/Pipeline/Pipeline/Pipeline/bin
 ./M_betRunner.sh $1 #Extract intermediate brain mask for eddy correction 
 ./Tmp1clear.sh $1 #Clear Stg1Tmp Folder
 ./min_eddy8.sh $1 #$2 #Correct for Eddy Currents and subject motion
-./eddy_quad_runner.sh $1 $3 #Quality control report stored in specified output directory #2 [Stg2Out]
+#./eddy_quad_runner.sh $1 $3 #Quality control report stored in specified output directory #2 [Stg2Out]
 ./M_Tmp2_2_Out.sh $1 $3 #Move Temp outputs of interest to specified output directory #2 [Stg2Out]
 #Stage 3
 #cd $2/Pipeline/scripts/Stg3
@@ -47,7 +47,7 @@ cd /opt/Pipeline/Pipeline/Pipeline/bin
 ./M_xtract_gpu.sh $1 $6 #Perform tractography algorithm and store in specified output directory #5 [XtractOutDir]
 ./Tmp4clear.sh $1 #Clear Stg4Tmp Folder
 ./Pipelinereset.sh $1
-now=(date +"%T")
+now=$(date +"%T")
 echo "Pipeline complete at $now"
 
 

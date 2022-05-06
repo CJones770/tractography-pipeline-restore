@@ -6,7 +6,7 @@ echo "Clearing stage 1 temp folder..."
 while [ "$(( i += 1 ))" -le $arrSize ]
 do
 zi=$( printf '%02d' "$i")
-rm /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/*
+rm -r /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/*
 rmdir /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/
 rmdir /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/
 done

@@ -2,7 +2,7 @@
 
 SubjectDirectory=$1
 arrSize=`ls $1 | wc -l`
-echo "Initializing 'acquisition_parameters.txt' files for $arrSize subjects:"
+echo "Initializing 'acquisition_parameters_min.txt' files for $arrSize subjects:"
 i=0
 while [ "$(( i += 1 ))" -le $arrSize ]
 do
