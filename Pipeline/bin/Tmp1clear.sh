@@ -8,6 +8,7 @@ do
 zi=$( printf '%02d' "$i")
 rm -r /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/*
 rmdir /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/
+rm -r /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/*
 rmdir /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/
 done
 echo "stage 1 temp folder cleared"
