@@ -51,9 +51,9 @@ It is crucial that input data in /SubjDir are named and stored appropriately i.e
 /SubjDir/sub_##/dwi/sub-##_acq-dir107_AP_dwi.nii.gz , /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.nii.gz , /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.bval , and /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.bvec ;
 Where /SubjDir is an arbitrarily named subject directory and ## is a 2 digit number specifying the subject ID. AP refers to the Anterior Posterior principal encoding direction and PA to its reverse; the bval and bvec files are sourced from the posterior-anterior encoding direction in this pipeline (but theoretically can be sourced from either).
 
-The amount of disk space needed per subject is approximately : 
+The amount of disk space needed per subject is approximately : 12GB
 
-The estimated run time from denoising to the completion of tractography using FSL's Xtract i.e., the whole pipeline [while utilizing an NVIDIA 1070ti graphics card] is :
+The estimated run time from denoising to the completion of tractography using FSL's Xtract i.e., the whole pipeline [while utilizing an NVIDIA 1070ti graphics card] is : 3hrs50minutes
 
 The pipeline relies on CUDA8.0 for gpu utilization, therefore a compatible NVIDIA graphics card is needed. 
 A list of cards and their CUDA version compatability can be found here: https://developer.nvidia.com/cuda-gpus
