@@ -1,10 +1,8 @@
 #!/bin/bash
 #Explicitly define SubjectDirectory as path to samples omiting the trailing /, e.g., /home/user/SubjectDirectory
-#root should be defined as /home/user , will be used instead of '~' when needed.
 #Exemplary output directories for stages 1-4 and Xtract: /home/user/MyOutputs/ThisRun/dwi_1_out ... /home/user/MyOutputs/ThisRun/dwi_Xtract_out
-#This scripts expects 7 arguments to be declared:
+#This scripts expects 6 arguments to be declared:
 SubjectDirectory=$1 
-#root=$2
 Stg1Out=$2
 Stg2Out=$3
 Stg3Out=$4

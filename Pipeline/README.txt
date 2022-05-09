@@ -41,7 +41,7 @@ sudo docker run -it --rm --runtime=nvidia -v /home/corey/P_samples:/SubjDir -v /
 cd /opt/Pipeline/Pipeline/Pipeline/bin
 
 3:
-./mini_Runner.sh /SubjDir TO/1o TO/2o TO/3o TO/4o TO/Xo
+./mini_Runner.sh /SubjDir /TO/1o /TO/2o /TO/3o /TO/4o /TO/Xo
 
 **NOTE: it is important to not include any additional forward slashes in both steps 1 & 3.**
 
