@@ -26,7 +26,7 @@ cd /opt/Pipeline/Pipeline/Pipeline/bin
 ./M_betRunner.sh $1 #Extract intermediate brain mask for eddy correction 
 ./Tmp1clear.sh $1 #Clear Stg1Tmp Folder
 ./min_eddy8.sh $1 #$2 #Correct for Eddy Currents and subject motion
-#./eddy_quad_runner.sh $1 $3 #Quality control report stored in specified output directory #2 [Stg2Out]
+./eddy_quad_runner.sh $1 $3 #Quality control report stored in specified output directory #2 [Stg2Out]
 ./M_Tmp2_2_Out.sh $1 $3 #Move Temp outputs of interest to specified output directory #2 [Stg2Out]
 #Stage 3
 #cd $2/Pipeline/scripts/Stg3
