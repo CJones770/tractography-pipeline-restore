@@ -32,7 +32,7 @@ cd /opt/Pipeline/Pipeline/Pipeline/bin
 #cd $2/Pipeline/scripts/Stg3
 ./M_nodif_brain_maker.sh $1 #Average b0 volumes from outlier free eddy corrected data
 ./M_FSLmathsRunner.sh $1 #Smooths outlier free eddy corrected data with 1mm^3 gaussian kernel 
-./M_smoothed_nodif_brainmaker.sh $1 #Average b0 volumes from smoothed outlier free eddy corrected dat
+./M_smoothed_nodif_brainmaker.sh $1 #Average b0 volumes from smoothed outlier free eddy corrected data
 ./M_T1Better.sh $1 #Create anatomical brain mask
 ./M_Tmp3_2_Out.sh $1 $4 #Move Temp outputs of interest to specified output directory #3 [Stg3Out]
 #Stage 4
