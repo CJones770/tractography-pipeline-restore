@@ -14,7 +14,7 @@ cp /opt/Pipeline/Pipeline/Pipeline/Stg2Tmp/sub_$zi/EddyOut_DNDG.eddy_outlier_fre
 cp /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp/sub_$zi/nodif_brain_mask_smoothed_mask.nii.gz /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_$zi/nodif_brain_mask.nii.gz
 cp /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp/sub_$zi/nodif_brain.nii.gz /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_$zi/nodif_brain.nii.gz
 echo "Subject $zi's BedpostX directory was successfully populated. Beginning estimations."
-bedpostx_gpu ~/Pipeline/Stg4Tmp/sub_$zi/BedpostX_$zi --rician
+bedpostx_gpu /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_$zi --rician
 echo "Estimations complete for subject $zi."
 now=$(date +"%T")
 echo "Current time : $now"

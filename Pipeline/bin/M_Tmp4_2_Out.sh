@@ -3,7 +3,7 @@ SubjectDirectory=$1
 OutDir4=$2
 arrSize=`ls $1 | wc -l`
 i=0
-echo "Copying stage 4 temp folder contents to /$2 "
+echo "Copying stage 4 temp folder contents to $2 "
 while [ "$(( i += 1 ))" -le $arrSize ]
 do
 zi=$( printf '%02d' "$i")
