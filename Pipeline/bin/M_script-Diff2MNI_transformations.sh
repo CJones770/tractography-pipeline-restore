@@ -123,7 +123,7 @@ apply_transf (){
   echo "DIFFUSION TO TEMPLATE (LINEAR + NON-LINEAR)"
   applywarp -i /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/nodif_brain.nii.gz \
   -w /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/diff2standard_warp.nii.gz \
-  -r /usr/fsl/data/standard/MNI152_T1_2mm.nii.gz \
+  -r /usr/local/fsl/data/standard/MNI152_T1_2mm.nii.gz \
   -o /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps/nodif_brain_in_MNI
 }
 
