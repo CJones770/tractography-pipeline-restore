@@ -33,7 +33,7 @@ where -it runs the container in an interactive terminal, --rm declares the conta
 To run in full one must call the 'mini_Runner.sh' script located in the Pipeline's bin, which exists in the container path /opt/Pipeline/Pipeline/Pipeline/bin/ ; 
 i.e., once in the container's interactive terminal, one must navigate to the directory with cd /opt/Pipeline/Pipeline/Pipeline/bin/ and then run ./mini_Runner.sh with the following inputs
 
-/Path/to/SubjectDirectory Path/to/OutputFolder1 Path/to/OutputFolder2 Path/to/OutputFolder3 Path/to/OutputFolder4 Path/to/OutputFolderX as they have been defined in the container during the mounting step;
+/Path/to/SubjectDirectory /Path/to/OutputFolder1 /Path/to/OutputFolder2 /Path/to/OutputFolder3 /Path/to/OutputFolder4 /Path/to/OutputFolderX as they have been defined in the container during the mounting step;
 
 working examples of this syntax from building the docker container to executing the main run script:
 
