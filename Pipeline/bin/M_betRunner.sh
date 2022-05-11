@@ -1,4 +1,8 @@
 #!/bin/bash
+FSLDIR=/usr/local/fsl 
+. ${FSLDIR}/etc/fslconf/fsl.sh
+PATH=${FSLDIR}/bin:${PATH}
+export FSLDIR PATH
 SubjectDirectory=$1
 arrSize=`ls $1 | wc -l`
 echo "Creating brain masks for $arrSize subjects"
