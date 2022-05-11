@@ -63,3 +63,21 @@ One may choose to stop the pipeline short, i.e., before diffusor tensors are est
 The pipeline relies on CUDA8.0 for gpu utilization, therefore a compatible NVIDIA graphics card is needed. 
 A list of cards and their CUDA version compatability can be found here: https://developer.nvidia.com/cuda-gpus
 Future versions of this pipeline may include newer versions of CUDA by default.
+
+Runtime breakdown:
+Stage 1 - Runtime = ~15minutes/subject
+dwidenoise [mrtrix3] ~7minutes30seconds/subject [removes gaussian noise using Marcenko-Pastur PCA denoising];
+mrdegibbs [mrtrix3] ~5minutes/subject [removes Gibbs Ringing artefacts] https://mrtrix.readthedocs.io/en/dev/reference/commands/mrdegibbs.html ; 
+bestb0finder & tester [shell] ~2minutes/subject
+Stage 2 - Runtime = ~40-45minutes/subject
+topup [FSL] ~13minutes/subject [Reduces effect of EPI distortions]
+applytopup [FSL] ~5minutes30seconds/subject
+EDDY [FSL] ~22minutes/subject (with NVIDIA 1070TI) [Reduces effects of eddy current and subject motion artefacts]
+eddy_quad [FSL]  [Performs quality control analysis and stores reports in defined second output directory e.g., /TO/2o/...]
+Stage 3 [FSLmaths & utils] - Runtime = ~2.5minutes/subject [Generates 'no_dif' brain images, anatomical brain masks, and smoothed copies thereof]
+Stage 4 - Runtime = TBD
+bedpostX [FSL] ~30-40 minutes/subject [Bayesian Estimation of Diffusion Parameters Obtained using Sampling Techniques, X stands for crossing fibre models]
+anatomical registration of diffusion data [FSL] ~40-50minutes/subject [Necessary precursor for performing probabilistic tractography using standard atlases]
+xtract [FSL] ~1hour30minutes/subject [probabalistic tractography method that utilizes ~40 predefined regions of interest] Runtime can be cut down by selecting specific tracts in a structs.txt file [not compatible with current dockerized version]
+Pipeline total runtime = ~
+Short pipeline total runtime = ~
