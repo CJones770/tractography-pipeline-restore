@@ -42,6 +42,7 @@ bestPA_b0=/opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tPA_b0_1.nii.gz
 	echo "$bestPA_b0"
 	fi
 	done
+exec > $2/sub_"$zi"/bestb0log.txt 2>&1
 echo "Closest matches for subject $zi are: "	
 echo "$bestAPb0res"
 echo "$bestPAb0res"
