@@ -82,12 +82,12 @@ Stage 3 [FSLmaths & utils] - Runtime = ~2.5minutes/subject [Generates 'no_dif' b
 
 Stage 4 - Runtime =     ~TBD
 
-bedpostx_gpu [FSL]      ~45-50 minutes/subject [Bayesian Estimation of Diffusion Parameters Obtained using Sampling Techniques, X stands for crossing fibre models]
-registration [FSL]      ~40-50minutes/subject [Anatomical registration of diffusion data]
+bedpostx_gpu [FSL]      ~45 minutes/subject [Bayesian Estimation of Diffusion Parameters Obtained using Sampling Techniques, X stands for crossing fibre models]
+registration [FSL]      ~30-45 minutes/subject [Anatomical registration of diffusion data]
 xtract* [FSL]           ~1hour30minutes/subject [probabalistic tractography method that utilizes ~40 predefined regions of interest] 
 *Runtime can be cut down by selecting specific tracts in a structs.txt file [not compatible with current dockerized version]
 
 Pipeline total runtime = ~
 Short pipeline total runtime = ~1 hour/subject
 
-Runtime estimates were made using an NVIDIA-1070-TI graphics card with 8GB of memory. Runtimes for eddy_cuda8.0,bedpostx_gpu, and xtract are affected by GPU memory availability.
+Runtime estimates were made while using an NVIDIA-1070-TI graphics card with 8GB of memory. Runtimes for eddy_cuda8.0,bedpostx_gpu, and xtract are affected by GPU memory availability.
