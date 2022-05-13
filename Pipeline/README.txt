@@ -82,11 +82,13 @@ eddy_quad [FSL]  [Performs quality control analysis and stores reports in define
 
 Stage 3 [FSLutils]      ~2.5minutes/subject [Generates 'no_dif' brain images, anatomical brain masks, and smoothed copies thereof]
 
-Stage 4 - Runtime =     ~TBD
+Stage 4 - Runtime =     ~1hr30minutes/subhect
 
 bedpostx_gpu [FSL]      ~45 minutes/subject [Bayesian Estimation of Diffusion Parameters Obtained using Sampling Techniques, X stands for crossing fibre models]
 registration [FSL]      ~30-45 minutes/subject [Anatomical registration of diffusion data]
-xtract* [FSL]           ~2hour20minutes/subject [probabalistic tractography method that utilizes ~40 predefined regions of interest] 
+
+Xtract stage: Runtime = ~2hours15minutes/subject
+xtract* [FSL]           ~2hours15minutes/subject [probabalistic tractography method that utilizes ~40 predefined regions of interest] 
 *Runtime can be cut down by selecting specific tracts in a structs.txt file [not compatible with current dockerized version]
 
 Pipeline total runtime = ~
