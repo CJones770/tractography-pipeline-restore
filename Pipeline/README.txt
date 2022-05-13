@@ -60,6 +60,8 @@ The estimated run time from denoising to the completion of tractography using FS
 
 One may choose to stop the pipeline short, i.e., before diffusor tensors are estimated by running ./short_Runner.sh with the same syntax as seen in the above example: Runtime is ~1hour/subject. This will stop the Pipeline after performing Eddy correction and QC report building i.e., after stage 2.
 
+One may choose to stop the pipeline immediately before running tractography [in order to select a given set of structures to track before proceeding, or to break up the processes]. This is done by running runner_NoTract.sh with the same inputs as above. Note: an Xtract output directory must be specified , but will not be populated. [Issue may be addressed in future version(s)]. Runtime is ~2hrs20mins/subject.
+
 The pipeline relies on CUDA8.0 for gpu utilization, therefore a compatible NVIDIA graphics card is needed. 
 A list of cards and their CUDA version compatability can be found here: https://developer.nvidia.com/cuda-gpus
 Future versions of this pipeline may include newer versions of CUDA by default.
@@ -84,11 +86,13 @@ Stage 4 - Runtime =     ~TBD
 
 bedpostx_gpu [FSL]      ~45 minutes/subject [Bayesian Estimation of Diffusion Parameters Obtained using Sampling Techniques, X stands for crossing fibre models]
 registration [FSL]      ~30-45 minutes/subject [Anatomical registration of diffusion data]
-xtract* [FSL]           ~1hour30minutes/subject [probabalistic tractography method that utilizes ~40 predefined regions of interest] 
+xtract* [FSL]           ~2hour20minutes/subject [probabalistic tractography method that utilizes ~40 predefined regions of interest] 
 *Runtime can be cut down by selecting specific tracts in a structs.txt file [not compatible with current dockerized version]
 
 Pipeline total runtime = ~
 Short pipeline total runtime = ~1 hour/subject
+
+Full pipeline omitting Xtract total runtime = ~2hrs30minutes/subject
 
 Runtime estimates were made while using an NVIDIA-1070-TI graphics card with 8GB of memory. Runtimes for eddy_cuda8.0,bedpostx_gpu, and xtract are affected by GPU memory availability.
 
