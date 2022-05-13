@@ -78,7 +78,7 @@ applytopup [FSL]        ~5minutes30seconds/subject
 eddy_cuda8.0 [FSL]      ~22minutes/subject [Reduces effects of eddy current and subject motion artefacts]
 eddy_quad [FSL]  [Performs quality control analysis and stores reports in defined second output directory e.g., /TO/2o/...]
 
-Stage 3 [FSLmaths & utils] - Runtime = ~2.5minutes/subject [Generates 'no_dif' brain images, anatomical brain masks, and smoothed copies thereof]
+Stage 3 [FSLutils]      ~2.5minutes/subject [Generates 'no_dif' brain images, anatomical brain masks, and smoothed copies thereof]
 
 Stage 4 - Runtime =     ~TBD
 
