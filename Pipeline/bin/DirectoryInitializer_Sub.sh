@@ -7,6 +7,12 @@ Xtractoutdir=$5
 SubjectDirectory=$6
 arrSize=`ls $6 | wc -l`
 i=0
+#First, check if disk_Check generated an error report
+if [ -e ./disk_check_e.txt ];
+then
+echo "couldn't initialize directories, not enough space to run the pipeline for $arrSize Subjects"
+exit 1
+fi 
 echo "Initializing Directories for $arrSize subjects."
 mkdir /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp
 mkdir /opt/Pipeline/Pipeline/Pipeline/Stg2Tmp
