@@ -5,7 +5,7 @@ workdir=$3
 desiredPad=$4
 numSubs=`ls $1 | wc -l`
 availableSpace=`df -hm | grep $2 | awk '{ print $4 }'`
-spaceNeeded=`expr $numSubs \* 9500 $4`
+spaceNeeded=`expr $numSubs \* 9500 + $4`
 echo "space available on mount $2 is "$availableSpace"MB and space needed is "$spaceNeeded"MB"
 if [ $spaceNeeded -ge $availableSpace ]
 then
