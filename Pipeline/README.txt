@@ -42,10 +42,12 @@ working examples of this syntax from building the docker container to executing 
 1:
 sudo docker run -it --rm --runtime=nvidia -v /home/corey/P_samples:/SubjDir -v /home/corey/pipeline-test-outputs/1o:/TO/1o -v /home/corey/pipeline-test-outputs/2o:/TO/2o -v /home/corey/pipeline-test-outputs/3o:/TO/3o -v /home/corey/pipeline-test-outputs/4o:/TO/4o -v /home/corey/pipeline-test-outputs/Xo:/TO/Xo --name dwi-pipeline jonescorey/dwi-pipeline:experimental
 
-2: 
-cd /opt/Pipeline/Pipeline/Pipeline/bin
+1.a. Note: if you want to utilize the disk check function, pull jonescorey/dwi-pipeline:experimental from docker hub instead of the image tagged latest. If using the latest version that doesn't check disk space, you may omit the last two arguments declared when running ./mini_Runner as described below.
 
-3:
+2: #change directories to access the pipeline's scripts
+cd /opt/Pipeline/Pipeline/Pipeline/bin 
+
+3: #Run a runner script of your choice: mini_Runner.sh runner_NoTract.sh or short_Runner.sh (see below Runtime breakdown for their descriptions)
 ./mini_Runner.sh /SubjDir /TO/1o /TO/2o /TO/3o /TO/4o /TO/Xo /MountName/For/DiskSpaceCheck 102400 [where 102400 is the minimum pad one may specify in MBs to remain open on the disk after the pipeline runs]
 
 **NOTE: it is important to not include any additional forward slashes in the above steps **
@@ -59,10 +61,6 @@ Where /SubjDir is an arbitrarily named subject directory and ## is a 2 digit num
 The amount of disk space needed per subject is approximately : 9GB. Ultimately ~6GB are stored in the output directories.
 
 The estimated run time from denoising to the completion of tractography using FSL's Xtract i.e., the whole pipeline [while utilizing an NVIDIA 1070ti graphics card] is : 4hrs50minutes per subject
-
-One may choose to stop the pipeline short, i.e., before diffusor tensors are estimated by running ./short_Runner.sh with the same syntax as seen in the above example: Runtime is ~1hour/subject. This will stop the Pipeline after performing Eddy correction and QC report building i.e., after stage 2.
-
-One may choose to stop the pipeline immediately before running tractography [in order to select a given set of structures to track before proceeding, or to break up the processes]. This is done by running runner_NoTract.sh with the same inputs as above. Note: an Xtract output directory must be specified , but will not be populated. [Issue may be addressed in future version(s)]. Runtime is ~2hrs20mins/subject.
 
 The pipeline relies on CUDA8.0 for gpu utilization, therefore a compatible NVIDIA graphics card is needed. 
 A list of cards and their CUDA version compatability can be found here: https://developer.nvidia.com/cuda-gpus
@@ -100,6 +98,9 @@ Full pipeline omitting Xtract total runtime = ~2hrs30minutes/subject
 
 Runtime estimates were made while using an NVIDIA-1070-TI graphics card with 8GB of memory. Runtimes for eddy_cuda8.0,bedpostx_gpu, and xtract are affected by GPU memory availability.
 
+One may choose to stop the pipeline short, i.e., before diffusor tensors are estimated by running ./short_Runner.sh with the same syntax as seen in the above example: Runtime is ~1hour/subject. This will stop the Pipeline after performing Eddy correction and QC report building i.e., after stage 2.
+
+One may choose to stop the pipeline immediately before running tractography [in order to select a given set of structures to track before proceeding, or to break up the processes]. This is done by running runner_NoTract.sh with the same inputs as above. Note: an Xtract output directory must be specified , but will not be populated. [Issue may be addressed in future version(s)]. Runtime is ~2hrs20mins/subject.
 
 #############################################################################################################################################################################################################
 
