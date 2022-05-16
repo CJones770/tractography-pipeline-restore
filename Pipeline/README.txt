@@ -39,7 +39,7 @@ i.e., once in the container's interactive terminal, one must navigate to the dir
 
 working examples of this syntax from building the docker container to executing the main run script:
 
-1:
+1: #Run the container, mount your subject and output directories, name the container, and choose the appropriate image:tag to build it from  
 sudo docker run -it --rm --runtime=nvidia -v /home/corey/P_samples:/SubjDir -v /home/corey/pipeline-test-outputs/1o:/TO/1o -v /home/corey/pipeline-test-outputs/2o:/TO/2o -v /home/corey/pipeline-test-outputs/3o:/TO/3o -v /home/corey/pipeline-test-outputs/4o:/TO/4o -v /home/corey/pipeline-test-outputs/Xo:/TO/Xo --name dwi-pipeline jonescorey/dwi-pipeline:experimental
 
 1.a. Note: if you want to utilize the disk check function, pull jonescorey/dwi-pipeline:experimental from docker hub instead of the image tagged latest. If using the latest version that doesn't check disk space, you may omit the last two arguments declared when running ./mini_Runner as described below.
