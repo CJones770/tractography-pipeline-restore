@@ -9,11 +9,12 @@ Stg3Out=$4
 Stg4Out=$5
 XtractOutDir=$6
 Mount=$7
+desiredPad=$8
 now=$(date +"%T")
 echo "Pipeline starting at $now ."
 #Stage 1
 cd /opt/Pipeline/Pipeline/Pipeline/bin
-./disk_Check.sh $1 $7 . #check if there is sufficient disk space to run the program, terminate if not
+./disk_Check.sh $1 $7 . $8 #check if there is sufficient disk space to run the program, terminate if not
 ./DirectoryInitializer_Sub.sh $2 $3 $4 $5 $6 $1 #Initialize Acq params, Temp, Output, and BedpostX Directories
 ./min_M_acqp_initializer.sh $1 #Copy subject acquisition parameters [bval, bvec, acquisition_parameters.txt] into respective ~/Pipeline/ACQP/sub_##/ directories
 ./M_dwi_denoise.sh $1 #Run MP-PCA denoising [Targets only Gaussian Noise]
