@@ -1,4 +1,4 @@
-README - dwi-pipeline version 0.0.1 developed by Corey Jones - May 6th 2022
+README - dwi-pipeline version 1.0.1d developed by Corey Jones - May 16th 2022
 
 This pipeline was developed to preprocess raw diffusion weighted image data of patients with Early Psychosis provided by the Human Connectome Project (HCP) to prepare them for probabalistic tractography.
 
@@ -6,8 +6,8 @@ An independent, similar pipeline developed by the University of Washington is av
 
 https://github.com/Washington-University/HCPpipelines && https://www.humanconnectome.org/software/hcp-mr-pipelines
 
-Both (my and the official) pipelines rely on NVIDIA's CUDA toolkit for gpu acceleration/parallelization, and therefore nvidia's docker container runtime toolkit should be installed prior to starting the container if it has not been installed already. This can be achieved by running  : 
-apt-get install nvidia-docker2 [for docker versions 19.03 or newer]
+Both (my and the official) pipelines rely on NVIDIA's CUDA toolkit for gpu acceleration/parallelization, and therefore to run this dwi-pipeline version 1.0.1d in a docker container as intended, nvidia's docker container runtime toolkit should be installed prior to starting the container if it has not been installed already. This can be achieved by running  : 
+apt-get update && apt-get install nvidia-docker2 [for docker versions 19.03 or newer] see https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html for troubleshooting
 
 OR:
 
@@ -18,45 +18,47 @@ distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
             sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
 
 and subsequently restarting the docker daemon with sudo system (or systemtcl) docker restart (depending on how you have installed docker).
-
+[you may need superuser/root priveleges to perform docker commands in general, and restarting the daemon will likely interrupt active processes in other containers if not kill them entirely]
 ** The above steps were pulled from the official Nvidia website at https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker **
 
-This pipeline is designed to run in a docker container that mounts a subject directory and five output directories from the host machine.
+The necessary docker image to run this pipeline can be pulled from docker hub by calling $ sudo docker pull jonescorey/dwi-pipeline
 
-This mounting is performed when calling 'docker run' on the image file e.g.,
+This pipeline is designed to run in a docker container that mounts a subject directory and five output directories from the host machine as volumes in the container.
+
+This mounting is performed while calling 'docker run' on the image file e.g.,
 If the image is tagged "dwi-pipeline:latest", one may mount their directories by running the following command:
 
-docker run -it --rm --runtime=nvidia -v /Path/to/local_Subject_Data:/Path/inContainer -v /Path/to/local_OutputFolder/1:/Outputs/1 /-v Path/to/local_OutputFolder/2:/Outputs/2 -v /Path/to/local_OutputFolder/3:/Outputs/3 -v /Path/to/local_OutputFolder/4:/Outputs/4 -v /Path/to/local_OutputFolder/X:/Outputs/X --name choose_name_for_container dwi-pipeline:latest
+docker run -it --rm --runtime=nvidia -v /Path/to/local_Subject_Data:/Path/toSubjData/inContainer -v /Path/to/local_OutputFolder/1:/Outputs/1 /-v Path/to/local_OutputFolder/2:/Outputs/2 -v /Path/to/local_OutputFolder/3:/Outputs/3 -v /Path/to/local_OutputFolder/4:/Outputs/4 -v /Path/to/local_OutputFolder/X:/Outputs/X --name choose_name_for_container jonescorey/dwi-pipeline:latest
 
-where -it runs the container in an interactive terminal, --rm declares the container shall be removed when stopped, runtime=nvidia enables the CUDA toolkit (CUDA8.0 in this case) -v specifies each volume to be mounted from the host machine to the container, the name of the container is arbitrary, and the final input is the image name with its tag i.e., dwi-pipeline:latest or equivalent as stored on the host machine.
+where the -it option runs the container in an interactive terminal, --rm declares the container shall be removed when stopped, runtime=nvidia enables the CUDA container runtime, -v specifies each volume to be mounted from the host machine to the container, the name of the container is arbitrary, and the final input is the image name with its tag i.e., dwi-pipeline:latest or equivalent as stored on the host machine.
 
 To run in full one must call the 'mini_Runner.sh' script located in the Pipeline's bin, which exists in the container path /opt/Pipeline/Pipeline/Pipeline/bin/ ; 
-i.e., once in the container's interactive terminal, one must navigate to the directory with cd /opt/Pipeline/Pipeline/Pipeline/bin/ and then run ./mini_Runner.sh with the following inputs
+i.e., once in the container's interactive terminal, one must navigate to the directory with $ cd /opt/Pipeline/Pipeline/Pipeline/bin/ ; then run $ ./mini_Runner.sh with the following inputs:
 
-/Path/to/SubjectDirectory /Path/to/OutputFolder1 /Path/to/OutputFolder2 /Path/to/OutputFolder3 /Path/to/OutputFolder4 /Path/to/OutputFolderX as they have been defined in the container during the mounting step;
+/Path/toSubjData/inContainer /Outputs/1 /Outputs/2 /Outputs/3 /Outputs/4 /Outputs/X /Path/to/CurrentMount 102400 [or other integer, representing the amount of space in MB to leave open on the disk after running the pipeline]
 
 working examples of this syntax from building the docker container to executing the main run script:
 
 1:
-sudo docker run -it --rm --runtime=nvidia -v /home/corey/P_samples:/SubjDir -v /home/corey/pipeline-test-outputs/1o:/TO/1o -v /home/corey/pipeline-test-outputs/2o:/TO/2o -v /home/corey/pipeline-test-outputs/3o:/TO/3o -v /home/corey/pipeline-test-outputs/4o:/TO/4o -v /home/corey/pipeline-test-outputs/Xo:/TO/Xo --name dwi-pipeline dwi-pipeline:latest
+sudo docker run -it --rm --runtime=nvidia -v /home/corey/P_samples:/SubjDir -v /home/corey/pipeline-test-outputs/1o:/TO/1o -v /home/corey/pipeline-test-outputs/2o:/TO/2o -v /home/corey/pipeline-test-outputs/3o:/TO/3o -v /home/corey/pipeline-test-outputs/4o:/TO/4o -v /home/corey/pipeline-test-outputs/Xo:/TO/Xo --name dwi-pipeline jonescorey/dwi-pipeline:experimental
 
 2: 
 cd /opt/Pipeline/Pipeline/Pipeline/bin
 
 3:
-./mini_Runner.sh /SubjDir /TO/1o /TO/2o /TO/3o /TO/4o /TO/Xo
+./mini_Runner.sh /SubjDir /TO/1o /TO/2o /TO/3o /TO/4o /TO/Xo /MountName/For/DiskSpaceCheck 102400 [where 102400 is the minimum pad one may specify in MBs to remain open on the disk after the pipeline runs]
 
 **NOTE: it is important to not include any additional forward slashes in the above steps **
 
-If all is properly setup, these 3 functions should initiate the pipeline. This will run over each subject in the specified directory. The outputs of pipeline stages 1 through 4 will be stored in the directories /TO/1o - /TO/4o (short for Test Outputs 1 - 4), and tractography data will be stored in /TO/Xo .
+If all is properly setup, these 3 functions should initiate the pipeline. This will run over each subject in the specified directory. The outputs of pipeline stages 1 through 4 will be stored in the directories /TO/1o - /TO/4o (short for Test Outputs 1 - 4), and tractography data will be stored in /TO/Xo The mount name that hosts the pipeline, its temp files [which are generated within the docker container], and the output directories [e.g., /dev/disk_name ; mounts can be seen by using' df -hm ' in a terminal]. The final, 8th argument to be entered is an integer value of the number of MB that must be left available on the disk during the run and after the pipeline is finished.
 
-It is crucial that input data in /SubjDir are named and stored appropriately i.e., with the form and path specified as follows:
-/SubjDir/sub_##/dwi/sub-##_acq-dir107_AP_dwi.nii.gz , /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.nii.gz , /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.bval , and /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.bvec ;
+It is crucial that input data in /SubjDir/ are named and stored appropriately i.e., with the form and path specified as follows:
+/SubjDir/sub_##/dwi/sub-##_acq-dir107_AP_dwi.nii.gz , /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.nii.gz , /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.bval , and /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.bvec , which should be the default bids format;
 Where /SubjDir is an arbitrarily named subject directory and ## is a 2 digit number specifying the subject ID. The list must start at 01 and increase incrementally. AP refers to the Anterior Posterior principal encoding direction and PA to its reverse; the bval and bvec files are sourced from the posterior-anterior encoding direction in this pipeline (but theoretically can be sourced from either).
 
 The amount of disk space needed per subject is approximately : 9GB. Ultimately ~6GB are stored in the output directories.
 
-The estimated run time from denoising to the completion of tractography using FSL's Xtract i.e., the whole pipeline [while utilizing an NVIDIA 1070ti graphics card] is : 3hrs50minutes per subject
+The estimated run time from denoising to the completion of tractography using FSL's Xtract i.e., the whole pipeline [while utilizing an NVIDIA 1070ti graphics card] is : 4hrs50minutes per subject
 
 One may choose to stop the pipeline short, i.e., before diffusor tensors are estimated by running ./short_Runner.sh with the same syntax as seen in the above example: Runtime is ~1hour/subject. This will stop the Pipeline after performing Eddy correction and QC report building i.e., after stage 2.
 
@@ -97,6 +99,9 @@ Short pipeline total runtime = ~1 hour/subject
 Full pipeline omitting Xtract total runtime = ~2hrs30minutes/subject
 
 Runtime estimates were made while using an NVIDIA-1070-TI graphics card with 8GB of memory. Runtimes for eddy_cuda8.0,bedpostx_gpu, and xtract are affected by GPU memory availability.
+
+
+#############################################################################################################################################################################################################
 
 References:
 dwidenoise: [pulled from https://mrtrix.readthedocs.io/en/latest/reference/commands/dwidenoise.html]
