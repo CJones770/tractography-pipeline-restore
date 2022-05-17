@@ -1,4 +1,4 @@
-README - dwi-pipeline version 1.0.1d developed by Corey Jones - May 16th 2022
+README - dwi-pipeline version 1.0.2d developed by Corey Jones - May 17th, 2022
 
 This pipeline was developed to preprocess raw diffusion weighted image data of patients with Early Psychosis provided by the Human Connectome Project (HCP) to prepare them for probabalistic tractography.
 
@@ -6,7 +6,7 @@ An independent, similar pipeline developed by the University of Washington is av
 
 https://github.com/Washington-University/HCPpipelines && https://www.humanconnectome.org/software/hcp-mr-pipelines
 
-Both (my and the official) pipelines rely on NVIDIA's CUDA toolkit for gpu acceleration/parallelization, and therefore to run this dwi-pipeline version 1.0.1d in a docker container as intended, nvidia's docker container runtime toolkit should be installed prior to starting the container if it has not been installed already. This can be achieved by running  : 
+Both (my and the official) pipelines rely on NVIDIA's CUDA toolkit for gpu acceleration/parallelization, and therefore to run this dwi-pipeline version 1.0.2d in a docker container as intended, nvidia's docker container runtime toolkit should be installed prior to starting the container if it has not been installed already. This can be achieved by running  : 
 apt-get update && apt-get install nvidia-docker2 [for docker versions 19.03 or newer] see https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html for troubleshooting
 
 OR:
@@ -23,7 +23,7 @@ and subsequently restarting the docker daemon with sudo system (or systemtcl) do
 
 The necessary docker image to run this pipeline can be pulled from docker hub by calling $ sudo docker pull jonescorey/dwi-pipeline
 
-This pipeline is designed to run in a docker container that mounts a subject directory and five output directories from the host machine as volumes in the container.
+This pipeline is designed to run in a docker container that mounts a subject directory and an output directory from the host machine as volumes in the container.
 
 This mounting is performed while calling 'docker run' on the image file e.g.,
 If the image is tagged "dwi-pipeline:latest", one may mount their directories by running the following command:
@@ -32,12 +32,12 @@ docker run -it --rm --runtime=nvidia -v /Path/to/local_Subject_Data:/Path/toSubj
 
 where the -it option runs the container in an interactive terminal, --rm declares the container shall be removed when stopped, runtime=nvidia enables the CUDA container runtime, -v specifies each volume to be mounted from the host machine to the container, the name of the container is arbitrary, and the final input is the image name with its tag i.e., dwi-pipeline:latest or equivalent as stored on the host machine.
 
-To run in full one must call the 'long_Runner.sh' or 'mini_Runner.sh' script located in the Pipeline's bin, which exists in the container path /opt/Pipeline/Pipeline/Pipeline/bin/ ; 
+To run the pipeline in full one must call the 'long_Runner.sh' or 'mini_Runner.sh' script located in the Pipeline's bin, which exists in the container path /opt/Pipeline/Pipeline/Pipeline/bin/ ; 
 i.e., once in the container's interactive terminal, one must navigate to the directory with $ cd /opt/Pipeline/Pipeline/Pipeline/bin/ ; then run $ ./long_Runner.sh (or mini_Runner.sh) with the following inputs:
 
 /Path/toSubjData/inContainer /Outputs /Path/to/CurrentMount 102400 [or other integer representing the amount of space in MB to leave open on the disk after running the pipeline]
 
-working examples of this syntax from building the docker container to executing the main run script:
+working examples of this syntax from building the docker container to executing the main run script are below:
 
 1: #Run the container, mount your subject and output directories, name the container, and choose the appropriate image:tag to build it from  
 sudo docker run -it --rm --runtime=nvidia -v /home/corey/P_samples:/SubjDir -v /home/corey/pipeline-test-outputs/TO:/TO --name dwi-pipeline jonescorey/dwi-pipeline:experimental
@@ -47,20 +47,23 @@ sudo docker run -it --rm --runtime=nvidia -v /home/corey/P_samples:/SubjDir -v /
 2: #change directories to access the pipeline's scripts
 cd /opt/Pipeline/Pipeline/Pipeline/bin 
 
-3: #Run a runner script of your choice: long_Runner.sh mini_Runner.sh runner_NoTract.sh or short_Runner.sh (see below Runtime breakdown for their descriptions)
-./mini_Runner.sh /SubjDir /TO /MountName/For/DiskSpaceCheck 102400 [where 102400 is the minimum pad one may specify in MBs to remain open on the disk after the pipeline runs]
+3: #Run a runner script of your choice: long_Runner.sh mini_Runner.sh runner_NoTract.sh or short_Runner.sh (see the section preceding References for their descriptions)
+./long_Runner.sh /SubjDir /TO /MountName/For/DiskSpaceCheck 102400 [where 102400 is an exemplary minimum pad one may specify in MBs to remain open on the disk after the pipeline runs]
+
+To ensure the specified disk is not overloaded by this process, one should specify no integer that is less than 0, and should consider using at least 10240 to leave 10GB of space; this is especially true if the disk is shared. Use your own discretion to choose a pad based on the amount of space you have available and the amount of space you might expect others to need.
 
 **NOTE: it is important to not include any additional forward slashes in the above steps **
 
-If all is properly setup, these 3 functions should initiate the pipeline. This will run over each subject in the specified directory. The outputs of pipeline stages 1 through 4 will be stored in the directories /TO/sub_##/1o - /TO/sub_##/4o (short for Test Outputs 1 - 4), and tractography data will be stored in /TO/sub_##/Xo .
+If all is properly setup, these 3 commands should initiate the pipeline. This will run over each subject in the specified directory. The outputs of pipeline stages 1 through 4 will be stored in the directories /TO/sub_##/1o/ - /TO/sub_##/4o/ (short for Test Outputs 1 - 4), and tractography data will be stored in /TO/sub_##/Xo/ .
 
 It is crucial that input data in /SubjDir/ are named and stored appropriately i.e., with the form and path specified as follows:
 /SubjDir/sub_##/dwi/sub-##_acq-dir107_AP_dwi.nii.gz , /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.nii.gz , /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.bval , and /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.bvec , which should be the default bids format;
 Where /SubjDir is an arbitrarily named subject directory and ## is a 2 digit number specifying the subject ID. The list must start at 01 and increase incrementally. AP refers to the Anterior Posterior principal encoding direction and PA to its reverse; the bval and bvec files are sourced from the posterior-anterior encoding direction in this pipeline (but theoretically can be sourced from either).
+*This pipeline does not handle data that have been collected in the RL-LR reverse phase encoding acquisition regime*
 
-The amount of disk space needed per subject is approximately : 9GB. Ultimately ~6GB are stored in the output directories. If using long_Runner.sh, the amount of space needed is 6GB/subject + 3GB.
+The amount of disk space needed per subject is approximately : 9GB. Ultimately ~6GB are stored in the output directories. If using long_Runner.sh, the amount of space needed is 6GB per subject + 3GB.
 
-The estimated run time from denoising to the completion of tractography using FSL's Xtract i.e., the whole pipeline [while utilizing an NVIDIA 1070ti graphics card] is : 4hrs50minutes per subject
+The estimated run time from denoising to the completion of tractography using FSL's Xtract i.e., the whole pipeline [while utilizing an NVIDIA 1070TI graphics card] is : 4hrs50minutes per subject
 
 The pipeline relies on CUDA8.0 for gpu utilization, therefore a compatible NVIDIA graphics card is needed. 
 A list of cards and their CUDA version compatability can be found here: https://developer.nvidia.com/cuda-gpus
@@ -78,7 +81,7 @@ Stage 2 - Runtime =     ~40-45minutes/subject
 topup [FSL]             ~13minutes/subject [Reduces effect of EPI distortions]
 applytopup [FSL]        ~5minutes30seconds/subject
 eddy_cuda8.0 [FSL]      ~22minutes/subject [Reduces effects of eddy current and subject motion artefacts]
-eddy_quad [FSL]  [Performs quality control analysis and stores reports in defined second output directory e.g., /TO/sub_##/2o/...]
+eddy_quad [FSL]         ~<1minute/subject [Performs quality control analysis and stores reports in defined second output directory e.g., /TO/sub_##/2o/...]
 
 Stage 3 [FSLutils]      ~2.5minutes/subject [Generates 'no_dif' brain images, anatomical brain masks, and smoothed copies thereof]
 
@@ -91,12 +94,12 @@ Xtract stage: Runtime = ~2hours15minutes/subject
 xtract* [FSL]           ~2hours15minutes/subject [probabalistic tractography method that utilizes ~40 predefined regions of interest] 
 *Runtime can be cut down by selecting specific tracts in a structs.txt file [not compatible with current dockerized version]
 
-Pipeline total runtime = ~
+Pipeline total runtime = ~4hrs50minutes/subject
 Short pipeline total runtime = ~1 hour/subject
 
 Full pipeline omitting Xtract total runtime (runner_NoTract.sh) = ~2hrs30minutes/subject
 
-long_Runner.sh runtime is similar to mini_Runner.sh as it runs all of the same processes. The differece is that the long runner performs the whole pipeline on one subject at a time [for all subjects in the specified directory assuming there is disk space], while the mini runner runs each step of the pipeline for each subject in the directory before moving to the next step;
+long_Runner.sh runtime is similar to mini_Runner.sh [4hrs50minutes] as it runs all of the same processes. The differece is that the long runner performs the whole pipeline on one subject at a time [for all subjects in the specified directory assuming there is disk space], whereas the mini runner runs each step of the pipeline for each subject in the directory before moving to the next step;
 
 Therefore, the long_Runner.sh script is more disk space efficient [~50% more efficient for a large number of subjects to be processed]
 
@@ -104,7 +107,7 @@ Runtime estimates were made while using an NVIDIA-1070-TI graphics card with 8GB
 
 One may choose to stop the pipeline short, i.e., before diffusor tensors are estimated by running ./short_Runner.sh with the same syntax as seen in the above example: Runtime is ~1hour/subject. This will stop the Pipeline after performing Eddy correction and QC report building i.e., after stage 2.
 
-One may choose to stop the pipeline immediately before running tractography [in order to select a given set of structures to track before proceeding, or to break up the processes]. This is done by running runner_NoTract.sh with the same inputs as above. Note: an Xtract output directory must be specified , but will not be populated. [Issue may be addressed in future version(s)]. Runtime is ~2hrs20mins/subject.
+One may choose to stop the pipeline immediately before running tractography [in order to select a given set of structures to track before proceeding, or to break up the processes]. This is done by running runner_NoTract.sh with the same inputs as above. Runtime is ~2hrs20mins/subject.
 
 #############################################################################################################################################################################################################
 
