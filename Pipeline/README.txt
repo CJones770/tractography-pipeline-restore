@@ -109,6 +109,8 @@ One may choose to stop the pipeline short, i.e., before diffusor tensors are est
 
 One may choose to stop the pipeline immediately before running tractography [in order to select a given set of structures to track before proceeding, or to break up the processes]. This is done by running runner_NoTract.sh with the same inputs as above. Runtime is ~2hrs20mins/subject.
 
+Note that the short and NoTract runner scripts can only be run in the wide format, therefore they are less efficient with respect to the disk space utilized while the pipeline runs.
+
 #############################################################################################################################################################################################################
 
 References:
