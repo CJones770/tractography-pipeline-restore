@@ -2,7 +2,6 @@
 #Explicitly define SubjectDirectory as path to samples omiting the trailing /, e.g., /home/user/SubjectDirectory
 #Exemplary output directories for stages 1-4 and Xtract: /home/user/MyOutputs/ThisRun/dwi_1_out ... /home/user/MyOutputs/ThisRun/dwi_Xtract_out
 #This scripts expects 6 arguments to be declared:
-
 SubjectDirectory=$1 
 Stg1Out=$2
 Stg2Out=$3
@@ -50,7 +49,8 @@ cd /opt/Pipeline/Pipeline/Pipeline/bin
 ./L_xtract_gpu.sh $1 $6 $zi #Perform tractography algorithm and store in specified output directory #5 [XtractOutDir]
 ./L_Tmp4clear.sh $1 $zi #Clear Stg4Tmp Folder
 ./L_Pipelinereset.sh $1 $zi
+done
 now=$(date +"%T")
-echo "Pipeline complete at $now"
+echo "Pipeline complete at $now for $arrSize subjects, last subject is sub-$zi"
 
 
