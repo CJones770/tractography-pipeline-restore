@@ -28,37 +28,37 @@ This pipeline is designed to run in a docker container that mounts a subject dir
 This mounting is performed while calling 'docker run' on the image file e.g.,
 If the image is tagged "dwi-pipeline:latest", one may mount their directories by running the following command:
 
-docker run -it --rm --runtime=nvidia -v /Path/to/local_Subject_Data:/Path/toSubjData/inContainer -v /Path/to/local_OutputFolder/1:/Outputs/1 /-v Path/to/local_OutputFolder/2:/Outputs/2 -v /Path/to/local_OutputFolder/3:/Outputs/3 -v /Path/to/local_OutputFolder/4:/Outputs/4 -v /Path/to/local_OutputFolder/X:/Outputs/X --name choose_name_for_container jonescorey/dwi-pipeline:latest
+docker run -it --rm --runtime=nvidia -v /Path/to/local_Subject_Data:/Path/toSubjData/inContainer -v /Path/to/local_OutputFolder:/Outputs --name choose_name_for_container jonescorey/dwi-pipeline:latest
 
 where the -it option runs the container in an interactive terminal, --rm declares the container shall be removed when stopped, runtime=nvidia enables the CUDA container runtime, -v specifies each volume to be mounted from the host machine to the container, the name of the container is arbitrary, and the final input is the image name with its tag i.e., dwi-pipeline:latest or equivalent as stored on the host machine.
 
-To run in full one must call the 'mini_Runner.sh' script located in the Pipeline's bin, which exists in the container path /opt/Pipeline/Pipeline/Pipeline/bin/ ; 
-i.e., once in the container's interactive terminal, one must navigate to the directory with $ cd /opt/Pipeline/Pipeline/Pipeline/bin/ ; then run $ ./mini_Runner.sh with the following inputs:
+To run in full one must call the 'long_Runner.sh' or 'mini_Runner.sh' script located in the Pipeline's bin, which exists in the container path /opt/Pipeline/Pipeline/Pipeline/bin/ ; 
+i.e., once in the container's interactive terminal, one must navigate to the directory with $ cd /opt/Pipeline/Pipeline/Pipeline/bin/ ; then run $ ./long_Runner.sh (or mini_Runner.sh) with the following inputs:
 
-/Path/toSubjData/inContainer /Outputs/1 /Outputs/2 /Outputs/3 /Outputs/4 /Outputs/X /Path/to/CurrentMount 102400 [or other integer, representing the amount of space in MB to leave open on the disk after running the pipeline]
+/Path/toSubjData/inContainer /Outputs /Path/to/CurrentMount 102400 [or other integer representing the amount of space in MB to leave open on the disk after running the pipeline]
 
 working examples of this syntax from building the docker container to executing the main run script:
 
 1: #Run the container, mount your subject and output directories, name the container, and choose the appropriate image:tag to build it from  
-sudo docker run -it --rm --runtime=nvidia -v /home/corey/P_samples:/SubjDir -v /home/corey/pipeline-test-outputs/1o:/TO/1o -v /home/corey/pipeline-test-outputs/2o:/TO/2o -v /home/corey/pipeline-test-outputs/3o:/TO/3o -v /home/corey/pipeline-test-outputs/4o:/TO/4o -v /home/corey/pipeline-test-outputs/Xo:/TO/Xo --name dwi-pipeline jonescorey/dwi-pipeline:experimental
+sudo docker run -it --rm --runtime=nvidia -v /home/corey/P_samples:/SubjDir -v /home/corey/pipeline-test-outputs/TO:/TO --name dwi-pipeline jonescorey/dwi-pipeline:experimental
 
-1.a. Note: if you want to utilize the disk check function, pull jonescorey/dwi-pipeline:experimental from docker hub instead of the image tagged latest. If using the latest version that doesn't check disk space, you may omit the last two arguments declared when running ./mini_Runner as described below.
+1.a. Note: if you want to utilize the disk check function, pull jonescorey/dwi-pipeline:experimental from docker hub instead of the image tagged 'latest'. If using the latest version that doesn't check disk space, you may omit the last two arguments declared when running ./mini_Runner as described below.
 
 2: #change directories to access the pipeline's scripts
 cd /opt/Pipeline/Pipeline/Pipeline/bin 
 
-3: #Run a runner script of your choice: mini_Runner.sh runner_NoTract.sh or short_Runner.sh (see below Runtime breakdown for their descriptions)
-./mini_Runner.sh /SubjDir /TO/1o /TO/2o /TO/3o /TO/4o /TO/Xo /MountName/For/DiskSpaceCheck 102400 [where 102400 is the minimum pad one may specify in MBs to remain open on the disk after the pipeline runs]
+3: #Run a runner script of your choice: long_Runner.sh mini_Runner.sh runner_NoTract.sh or short_Runner.sh (see below Runtime breakdown for their descriptions)
+./mini_Runner.sh /SubjDir /TO /MountName/For/DiskSpaceCheck 102400 [where 102400 is the minimum pad one may specify in MBs to remain open on the disk after the pipeline runs]
 
 **NOTE: it is important to not include any additional forward slashes in the above steps **
 
-If all is properly setup, these 3 functions should initiate the pipeline. This will run over each subject in the specified directory. The outputs of pipeline stages 1 through 4 will be stored in the directories /TO/1o - /TO/4o (short for Test Outputs 1 - 4), and tractography data will be stored in /TO/Xo The mount name that hosts the pipeline, its temp files [which are generated within the docker container], and the output directories [e.g., /dev/disk_name ; mounts can be seen by using' df -hm ' in a terminal]. The final, 8th argument to be entered is an integer value of the number of MB that must be left available on the disk during the run and after the pipeline is finished.
+If all is properly setup, these 3 functions should initiate the pipeline. This will run over each subject in the specified directory. The outputs of pipeline stages 1 through 4 will be stored in the directories /TO/sub_##/1o - /TO/sub_##/4o (short for Test Outputs 1 - 4), and tractography data will be stored in /TO/sub_##/Xo .
 
 It is crucial that input data in /SubjDir/ are named and stored appropriately i.e., with the form and path specified as follows:
 /SubjDir/sub_##/dwi/sub-##_acq-dir107_AP_dwi.nii.gz , /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.nii.gz , /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.bval , and /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.bvec , which should be the default bids format;
 Where /SubjDir is an arbitrarily named subject directory and ## is a 2 digit number specifying the subject ID. The list must start at 01 and increase incrementally. AP refers to the Anterior Posterior principal encoding direction and PA to its reverse; the bval and bvec files are sourced from the posterior-anterior encoding direction in this pipeline (but theoretically can be sourced from either).
 
-The amount of disk space needed per subject is approximately : 9GB. Ultimately ~6GB are stored in the output directories.
+The amount of disk space needed per subject is approximately : 9GB. Ultimately ~6GB are stored in the output directories. If using long_Runner.sh, the amount of space needed is 6GB/subject + 3GB.
 
 The estimated run time from denoising to the completion of tractography using FSL's Xtract i.e., the whole pipeline [while utilizing an NVIDIA 1070ti graphics card] is : 4hrs50minutes per subject
 
@@ -94,7 +94,11 @@ xtract* [FSL]           ~2hours15minutes/subject [probabalistic tractography met
 Pipeline total runtime = ~
 Short pipeline total runtime = ~1 hour/subject
 
-Full pipeline omitting Xtract total runtime = ~2hrs30minutes/subject
+Full pipeline omitting Xtract total runtime (runner_NoTract.sh) = ~2hrs30minutes/subject
+
+long_Runner.sh runtime is similar to mini_Runner.sh as it runs all of the same processes. The differece is that the long runner performs the whole pipeline on one subject at a time [for all subjects in the specified directory assuming there is disk space], while the mini runner runs each step of the pipeline for each subject in the directory before moving to the next step;
+
+Therefore, the long_Runner.sh script is more disk space efficient [~50% more efficient for a large number of subjects to be processed]
 
 Runtime estimates were made while using an NVIDIA-1070-TI graphics card with 8GB of memory. Runtimes for eddy_cuda8.0,bedpostx_gpu, and xtract are affected by GPU memory availability.
 
