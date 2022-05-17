@@ -2,7 +2,7 @@
 SubjectDirectory=$1
 OutDir3=$2
 zi=$3
-echo "Copying Stage 3 temp folder contents to $2 "
+echo "Copying Stage 3 temp folder contents to $2/3o/ "
 cp /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp/sub_$zi/nodif_brain.nii.gz $2/sub_$zi/3o/nodif_brain.nii.gz	
 cp /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp/sub_$zi/nodif_brain_mask.nii.gz $2/sub_$zi/3o/nodif_brain_mask.nii.gz
 cp /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp/sub_$zi/smoothed_nodif_brain.nii.gz $2/sub_$zi/3o/no_dif_brain_smoothed.nii.gz

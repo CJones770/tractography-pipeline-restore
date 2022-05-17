@@ -2,7 +2,7 @@
 SubjectDirectory=$1
 OutDir4=$2
 zi=$3
-echo "Copying stage 4 temp folder contents to $2 "
+echo "Copying stage 4 temp folder contents to $2/4o/ "
 mkdir $2/sub_$zi/4o/BedpostX_"$zi"/
 mkdir $2/sub_$zi/4o/BedpostX_"$zi".bedpostX/
 mkdir $2/sub_$zi/4o/BedpostX_"$zi".bedpostX/xfms/
