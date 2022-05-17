@@ -7,6 +7,11 @@ numSubs=`ls $1 | wc -l`
 availableSpace=`df -hm | grep $2 | awk '{ print $4 }'`
 spaceNeeded=`expr $numSubs \* 9500 + $4`
 echo "space available on mount $2 is "$availableSpace"MB and space needed is "$spaceNeeded"MB"
+if [ -e ./disk_check_e.txt && $spaceNeeded -le $availableSpace ]
+then
+rm disk_check_e.txt
+echo "There is sufficient space available to run the pipeline and leave "$4"MB open on the disk : $2" 
+fi
 if [ $spaceNeeded -ge $availableSpace ]
 then
 echo "not enough space available to run pipeline for $numSubs subjects"
