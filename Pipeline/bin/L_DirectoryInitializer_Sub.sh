@@ -32,11 +32,16 @@ mkdir /opt/Pipeline/Pipeline/Pipeline/Stg2Tmp/sub_$zi/
 mkdir /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp/sub_$zi/
 mkdir /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/
 mkdir /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_$zi/
-mkdir $1/sub_$zi/  #denoised, degibbsed, merged images
-mkdir $2/sub_$zi/  #outputs of topup and eddy [corrected for EPI distortions, eddy currents, and subject movement]
-mkdir $3/sub_$zi/  #Anatomical and 0-Diffusion masks and 'nodif_brain.nii.gz'
-mkdir $4/sub_$zi/  #BedpostX outputs: Diffusion tensor estimates [Fractional Anisotropy and Mean Diffusivity]	
-mkdir $5/sub_$zi/ #Tractography outputs [fiber density norm, length, etc.]
+mkdir $1/sub_$zi
+mkdir $2/sub_$zi
+mkdir $3/sub_$zi
+mkdir $4/sub_$zi
+mkdir $5/sub_$zi
+mkdir $1/sub_$zi/1o  #denoised, degibbsed, merged images
+mkdir $2/sub_$zi/2o  #outputs of topup and eddy [corrected for EPI distortions, eddy currents, and subject movement]
+mkdir $3/sub_$zi/3o  #Anatomical and 0-Diffusion masks and 'nodif_brain.nii.gz'
+mkdir $4/sub_$zi/4o  #BedpostX outputs: Diffusion tensor estimates [Fractional Anisotropy and Mean Diffusivity]	
+mkdir $5/sub_$zi/Xo #Tractography outputs [fiber density norm, length, etc.]
 echo "Directories initialized"
 
 
