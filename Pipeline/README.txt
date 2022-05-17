@@ -78,7 +78,7 @@ Stage 2 - Runtime =     ~40-45minutes/subject
 topup [FSL]             ~13minutes/subject [Reduces effect of EPI distortions]
 applytopup [FSL]        ~5minutes30seconds/subject
 eddy_cuda8.0 [FSL]      ~22minutes/subject [Reduces effects of eddy current and subject motion artefacts]
-eddy_quad [FSL]  [Performs quality control analysis and stores reports in defined second output directory e.g., /TO/2o/...]
+eddy_quad [FSL]  [Performs quality control analysis and stores reports in defined second output directory e.g., /TO/sub_##/2o/...]
 
 Stage 3 [FSLutils]      ~2.5minutes/subject [Generates 'no_dif' brain images, anatomical brain masks, and smoothed copies thereof]
 
