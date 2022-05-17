@@ -1,7 +1,7 @@
 #!/bin/bash
 SubjectDirectory=$1
 zi=$2
-echo "Generating nodif_brain images and masks for $arrSize subjects"
+echo "Generating nodif_brain images and masks for subject $zi"
 fslroi /opt/Pipeline/Pipeline/Pipeline/Stg2Tmp/sub_$zi/EddyOut_DNDG.eddy_outlier_free_data.nii.gz /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp/sub_$zi/i1 0 1
 fslroi /opt/Pipeline/Pipeline/Pipeline/Stg2Tmp/sub_$zi/EddyOut_DNDG.eddy_outlier_free_data.nii.gz /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp/sub_$zi/i2 1 1
 fslroi /opt/Pipeline/Pipeline/Pipeline/Stg2Tmp/sub_$zi/EddyOut_DNDG.eddy_outlier_free_data.nii.gz /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp/sub_$zi/i3 17 1

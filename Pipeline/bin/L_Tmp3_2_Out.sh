@@ -10,4 +10,4 @@ cp /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp/sub_$zi/nodif_brain_mask_mask.nii.gz 
 cp /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp/sub_$zi/nodif_brain_mask_smoothed.nii.gz $2/sub_$zi/3o/nodif_brain_mask_smoothed.nii.gz
 cp /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp/sub_$zi/nodif_brain_mask_smoothed_mask.nii.gz $2/sub_$zi/3o/nodif_brain_binary_mask_smoothed.nii.gz
 cp /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp/sub_$zi/sub-"$zi"_T1bet.nii.gz $2/sub_$zi/3o/T1_anat_mask.nii.gz
-echo "Stage 3 temp folder contents copied for $arrSize subjects"
+echo "Stage 3 temp folder contents copied for subject $zi"

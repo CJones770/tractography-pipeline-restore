@@ -141,9 +141,9 @@ echo ""
 echo "Tranforming Files ...."
 mkdir -p /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp/sub_$zi/BedpostX_"$zi".bedpostX/xfms/test_warps #$session/BEDPOSTX.bedpostX/xfms/test_warps
 now=$(date +"%T")
-echo "Current time : $now"
+echo "Current time : $now ; applying transformations..."
 apply_transf $1
-
+echo "Transformations applied"
 now=$(date +"%T")
 echo "Finishing time : $now"
 

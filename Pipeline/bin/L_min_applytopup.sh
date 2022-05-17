@@ -1,7 +1,7 @@
 #!/bin/bash
 SubjectDirectory=$1
 zi=$2
-echo "Running applytopup for $arrSize subjects"
+echo "Running applytopup for subject $zi"
 now=$(date +"%T")
 echo "Starting time : $now"
 applytopup --imain=/opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/d107-AP_DNDG.nii.gz,/opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/d107-PA_DNDG.nii.gz \
@@ -10,5 +10,4 @@ applytopup --imain=/opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/d107-AP_DNDG.
 now=$(date +"%T")
 echo "Topup applied to subject $zi : current time is $now"
 echo "Ready for brainmask creation."
-now=$(date +"%T")
 

@@ -2,7 +2,7 @@
 # ./M_topup.sh SubjectDirectory e.g., ./M_topup.sh ~/Path_to_Samples 
 SubjectDirectory=$1
 zi=$2
-echo "Beginning topup EPI distorion correction. The number of subjects detected in directory $1 is $arrSize ."
+echo "Beginning topup EPI distorion correction for subject $zi ."
 now=$(date +"%T")
 echo "Starting time : $now"
 topup --imain=/opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/AP_PA_TopupInput2Vols.nii.gz --datain=/opt/Pipeline/Pipeline/Pipeline/ACQP/sub_$zi/acquisition_parameters_min.txt --out=/opt/Pipeline/Pipeline/Pipeline/Stg2Tmp/sub_$zi/DNDGTopup \
@@ -10,6 +10,4 @@ topup --imain=/opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/AP_PA_TopupInput2V
 echo "Topup complete for subject $zi"
 now=$(date +"%T")
 echo "Current time : $now"
-echo "Topup completed for subject $zi. Ready for applytopup."
-now=$(date +"%T")
 

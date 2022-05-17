@@ -1,7 +1,7 @@
 #!/bin/bash
 SubjectDirectory=$1
 zi=$2
-echo "Preparing eddy current correction for $arrSize subjects. Requires CUDA8.0 compatible hardware and drivers."
+echo "Preparing eddy current correction for subject $zi. Requires CUDA8.0 compatible hardware and drivers."
 now=$(date +"%T")
 echo "Starting time : $now"
 echo "Copying bvec and bval files from Subject directory to ~/Pipeline/ACQP/sub_$zi/"

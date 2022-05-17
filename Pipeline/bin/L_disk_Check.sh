@@ -14,13 +14,13 @@ echo "There is sufficient space available to run the pipeline and leave "$4"MB o
 fi
 if [ $spaceNeeded -ge $availableSpace ]
 then
-echo "not enough space available to run pipeline for $numSubs subjects"
+echo "not enough space available to run pipeline for $numSubs subject(s)"
 exec > $3/disk_check_e.txt 2>&1
 exit 1
 fi 
 if [ $spaceNeeded -le $availableSpace ]
 then
-echo "There is sufficient space available to run the pipeline for $numSubs subjects"
+echo "There is sufficient space available to run the pipeline for $numSubs subject(s)"
 fi
 echo "Beginning pipeline : "
 

@@ -2,7 +2,7 @@
 SubjDirectory=$1
 Out1Dir=$2
 zi=$3
-echo "Testing b0 volumes for closest resemblance to mean volume for $arrSize subjects"
+echo "Testing b0 volumes for closest resemblance to mean volume for subject $zi"
 now=$(date +"%T")
 echo "Starting time: $now"
 j=1
@@ -11,6 +11,7 @@ bestPAb0res=/opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tPA_b0_1_rsqr.nii.gz
 bestAP_b0=/opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tAP_b0_1.nii.gz
 bestPA_b0=/opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tPA_b0_1.nii.gz
 for  ((j=1;j<=7;j++));
+do
 xi=$( printf "$j")
 #AP Direction
 fslmaths $bestAPb0res -sub /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tAP_b0_"$xi"_rsqr.nii.gz /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/AP_best-b_"$xi".nii.gz

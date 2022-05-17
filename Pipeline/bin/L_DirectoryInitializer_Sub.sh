@@ -11,10 +11,10 @@ i=0
 #First, check if disk_Check generated an error report
 if [ -e ./disk_check_e.txt ];
 then
-echo "couldn't initialize directories, not enough space to run the pipeline for $arrSize Subjects"
+echo "couldn't initialize directories, not enough space to run the pipeline for subject $zi"
 exit 1
 fi 
-echo "Initializing Directories for $arrSize subjects."
+echo "Initializing Directories for subject $zi."
 mkdir /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp
 mkdir /opt/Pipeline/Pipeline/Pipeline/Stg2Tmp
 mkdir /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp
@@ -42,6 +42,6 @@ mkdir $2/sub_$zi/2o  #outputs of topup and eddy [corrected for EPI distortions, 
 mkdir $3/sub_$zi/3o  #Anatomical and 0-Diffusion masks and 'nodif_brain.nii.gz'
 mkdir $4/sub_$zi/4o  #BedpostX outputs: Diffusion tensor estimates [Fractional Anisotropy and Mean Diffusivity]	
 mkdir $5/sub_$zi/Xo #Tractography outputs [fiber density norm, length, etc.]
-echo "Directories initialized"
+echo "Directories initialized for subject $zi"
 
 

@@ -1,11 +1,10 @@
 #!/bin/bash
 SubjectDirectory=$1
 zi=$2
-arrSize=`ls $1 | wc -l`
 j=0
 now=$(date +"%T")
 #edit 7 to account for a variable number of b0 volumes, and to defer to 7 as a default
-echo "Extracting b0 volumes and calculating residuals with respect to the average b0 [mean of 7 volumes] for $arrSize subjects...."
+echo "Extracting b0 volumes and calculating residuals with respect to the average b0 [mean of 7 volumes] for subject $zi...."
 echo "Starting time : $now"
 #extract b0 volumes
 fslroi /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/d107-PA_DNDG.nii.gz /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tPA_b0_1 0 1
