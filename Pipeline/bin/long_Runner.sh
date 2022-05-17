@@ -43,7 +43,7 @@ cd /opt/Pipeline/Pipeline/Pipeline/bin
 #Stage 4
 ./L_bedpostXRunner.sh $1 $zi #Estimate Diffusion Tensors
 ./L_Tmp2clear.sh $1 $zi #Clear Stg2Tmp Folder
-./L_script-Diff2MNI_transformations.sh $1 #Perform nonlinear anatomical registration of diffusion data
+./L_script-Diff2MNI_transformations.sh $1 $zi #Perform nonlinear anatomical registration of diffusion data
 ./L_Tmp3clear.sh $1 $zi #Clear Stg3Tmp Folder
 ./L_Tmp4_2_Out.sh $1 $2 $zi #Move Temp outputs of interest to specified output directory #4 [Stg4Out]
 ./L_xtract_gpu.sh $1 $2 $zi #Perform tractography algorithm and store in specified output directory #5 [XtractOutDir]
