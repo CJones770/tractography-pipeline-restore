@@ -67,6 +67,7 @@ The user can specify an arbitrary range of subjects to run the pipeline over by 
 
 ./spec_long_Runner.sh /SubjDir /TO /Mount 0 2 2 ; which will run the pipeline for only subject 2.
 
+NOTE: IF YOU MANUALLY INTERRUPT THE PIPELINE YOU MAY EXPERIENCE ERRORS ATTEMPTING TO RESTART IT. THIS CAN BE RESOLVED BY RESTARTING THE DOCKER CONTAINER WITH `exit` AND RERUNNING THE "RUN" COMMAND ABOVE. THE RAMIFICATIONS OF RESTARTING THE DOCKER CONTAINER IN THE MIDDLE OF LARGE PROCESSING JOBS HAS NOT BEEN FULLY TESTED. The subject data that have been processed and exported to the specified output directory should not be lost as a result.
 
 The amount of disk space needed per subject is approximately : 9GB. Ultimately ~6GB are stored in the output directories. If using long_Runner.sh, the amount of space needed is 6GB per subject + 3GB.
 
