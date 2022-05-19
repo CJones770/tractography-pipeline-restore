@@ -61,11 +61,11 @@ It is crucial that input data in /SubjDir/ are named and stored appropriately i.
 Where /SubjDir is an arbitrarily named subject directory and ## is a 2 digit number specifying the subject ID. The list must start at 01 and increase incrementally. AP refers to the Anterior Posterior principal encoding direction and PA to its reverse; the bval and bvec files are sourced from the posterior-anterior encoding direction in this pipeline (but theoretically can be sourced from either).
 *This pipeline does not handle data that have been collected in the RL-LR reverse phase encoding acquisition regime*
 
-The user can specify an arbitrary range of subjects to run the pipeline over by using the spec_* runners i.e., (spec_long_Runner.sh , spec_short_RunnerL.sh or spec_NoTract_RunnerL.sh) with the same arguments as seen above with the addition of two arguments at the end, the first being the first subject number in the desired range and the second being the last. An example is given below:
+The user can specify an arbitrary range of subjects to run the pipeline over by using the spec_* runners i.e., (spec_longRunner.sh , spec_short_RunnerL.sh or spec_NoTract_RunnerL.sh) with the same arguments as seen above with the addition of two arguments at the end, the first being the first subject number in the desired range and the second being the last. An example is given below:
 
-./spec_long_Runner.sh /SubjDir /TO /Mount 0 1 10 ; which will run the pipeline for subjects 1 through 10 storing their outputs in /TO/sub_##/* . To run one subject only one can specify the following:
+./spec_longRunner.sh /SubjDir /TO /Mount 0 1 10 ; which will run the pipeline for subjects 1 through 10 storing their outputs in /TO/sub_##/* . To run one subject only one can specify the following:
 
-./spec_long_Runner.sh /SubjDir /TO /Mount 0 2 2 ; which will run the pipeline for only subject 2.
+./spec_longRunner.sh /SubjDir /TO /Mount 0 2 2 ; which will run the pipeline for only subject 2.
 
 NOTE: IF YOU MANUALLY INTERRUPT THE PIPELINE YOU MAY EXPERIENCE ERRORS ATTEMPTING TO RESTART IT. THIS CAN BE RESOLVED BY RESTARTING THE DOCKER CONTAINER WITH `exit` AND RERUNNING THE "RUN" COMMAND ABOVE. THE RAMIFICATIONS OF RESTARTING THE DOCKER CONTAINER IN THE MIDDLE OF LARGE PROCESSING JOBS HAS NOT BEEN FULLY TESTED. The subject data that have been processed and exported to the specified output directory should not be lost as a result.
 
