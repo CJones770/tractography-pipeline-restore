@@ -1,12 +1,18 @@
-README - dwi-pipeline version 1.0.4d developed by Corey Jones - May 17th, 2022
+README - dwi-pipeline version 1.0.4d developed by Corey Jones - May 19th, 2022
 
+You should read this entire README file before attempting to run the docker container and pipeline
+
+1) DESCRIPTION:
 This pipeline was developed to preprocess raw diffusion weighted image data of patients with Early Psychosis provided by the Human Connectome Project (HCP) to prepare them for probabalistic tractography.
 
 An independent, similar pipeline developed by the University of Washington is available on the HCP official website and on the U-Washington Github at either of the following links:
 
 https://github.com/Washington-University/HCPpipelines && https://www.humanconnectome.org/software/hcp-mr-pipelines
 
-Both (my and the official) pipelines rely on NVIDIA's CUDA toolkit for gpu acceleration/parallelization, and therefore to run this dwi-pipeline version 1.0.2d in a docker container as intended, nvidia's docker container runtime toolkit should be installed prior to starting the container if it has not been installed already. This can be achieved by running  : 
+Both (my and the official) pipelines rely on NVIDIA's CUDA toolkit for gpu acceleration/parallelization, and therefore to run this dwi-pipeline version 1.0.2d in a docker container as intended, nvidia's docker container runtime toolkit should be installed prior to starting the container if it has not been installed already. 
+
+2) NVIDIA-CONTAINER-RUNTIME INSTALLATION INSTRUCTIONS:
+This can be achieved by running  : 
 apt-get update && apt-get install nvidia-docker2 [for docker versions 19.03 or newer] see https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html for troubleshooting
 
 OR:
@@ -21,17 +27,24 @@ and subsequently restarting the docker daemon with sudo system (or systemtcl) do
 [you may need superuser/root priveleges to perform docker commands in general, and restarting the daemon will likely interrupt active processes in other containers if not kill them entirely]
 ** The above steps were pulled from the official Nvidia website at https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker **
 
+3) PULLING THE PIPELINE'S DOCKER IMAGE FROM DOCKERHUB:
 The necessary docker image to run this pipeline can be pulled from docker hub by calling $ sudo docker pull jonescorey/dwi-pipeline
 
 This pipeline is designed to run in a docker container that mounts a subject directory and an output directory from the host machine as volumes in the container.
 
-This mounting is performed while calling 'docker run' on the image file e.g.,
+4) RUNNING DOCKER CONTAINER AND MOUNTING LOCAL FILES TO IT: 
+
+** NOTE: it is important to not include any additional forward slashes in the following steps AND 
+** YOU SHOULD NOT MOUNT OR USE "/" OR ANY OTHER RESTRICTED DIRECTORIES AS INPUT OR OUTPUT DIRECTORIES UNLESS YOU KNOW WHAT YOU ARE DOING AND HAVE ACCESS TO THEM **
+
+File mounting is performed while calling 'docker run' on the docker image e.g.,
 If the image is tagged "dwi-pipeline:latest", one may mount their directories by running the following command:
 
 docker run -it --rm --runtime=nvidia -v /Path/to/local_Subject_Data:/Path/toSubjData/inContainer -v /Path/to/local_OutputFolder:/Outputs --name choose_name_for_container jonescorey/dwi-pipeline:latest
 
-where the -it option runs the container in an interactive terminal, --rm declares the container shall be removed when stopped, runtime=nvidia enables the CUDA container runtime, -v specifies each volume to be mounted from the host machine to the container, the name of the container is arbitrary, and the final input is the image name with its tag i.e., dwi-pipeline:latest or equivalent as stored on the host machine.
+where the -it option runs the container in an interactive terminal, --rm declares the container shall be removed when stopped, runtime=nvidia enables the CUDA container runtime, -v specifies each volume to be mounted from the host machine to the container, the name of the container is arbitrary, and the final input is the image name with its tag i.e., jonescorey/dwi-pipeline:latest or equivalent that is stored on the host machine.
 
+5) PIPELINE RUNNER SCRIPTS: [READ IN FULL BEFORE DECIDING WHICH SCRIPT IS BEST SUITED FOR YOU]
 To run the pipeline in full one must call the 'long_Runner.sh' or 'mini_Runner.sh' script located in the Pipeline's bin, which exists in the container path /opt/Pipeline/Pipeline/Pipeline/bin/ ; 
 i.e., once in the container's interactive terminal, one must navigate to the directory with $ cd /opt/Pipeline/Pipeline/Pipeline/bin/ ; then run $ ./long_Runner.sh (or mini_Runner.sh) with the following inputs:
 
@@ -39,36 +52,46 @@ i.e., once in the container's interactive terminal, one must navigate to the dir
 
 working examples of this syntax from building the docker container to executing the main run script are below:
 
-1: #Run the container, mount your subject and output directories, name the container, and choose the appropriate image:tag to build it from  
+1: #Run the container, mount your subject and output directories, name the container, and choose the appropriate image:tag to build it from [same as what is described in step 4] 
 sudo docker run -it --rm --runtime=nvidia -v /home/corey/P_samples:/SubjDir -v /home/corey/pipeline-test-outputs/TO:/TO --name dwi-pipeline jonescorey/dwi-pipeline:experimental
-
-1.a. Note: if you want to utilize the disk check function, pull jonescorey/dwi-pipeline:experimental from docker hub instead of the image tagged 'latest'. If using the latest version that doesn't check disk space, you may omit the last two arguments declared when running ./mini_Runner as described below.
 
 2: #change directories to access the pipeline's scripts
 cd /opt/Pipeline/Pipeline/Pipeline/bin 
 
-3: #Run a runner script of your choice: long_Runner.sh mini_Runner.sh runner_NoTract.sh or short_Runner.sh (see the section preceding References for their descriptions)
+3: #Run a runner script of your choice: long_Runner.sh mini_Runner.sh runner_NoTract.sh or short_Runner.sh; or if you want to run for a select range of subjects e.g., 1-10 or just a specific subject use one of the following: spec_longRunner.sh spec_short_RunnerL.sh spec_NoTract_RunnerL.sh (see the section preceding References for their descriptions) The syntax for the first 4 specified scripts is:
+
 ./long_Runner.sh /SubjDir /TO /MountName/For/DiskSpaceCheck 102400 [where 102400 is an exemplary minimum pad one may specify in MBs to remain open on the disk after the pipeline runs]
 
-To ensure the specified disk is not overloaded by this process, one should specify no integer that is less than 0, and should consider using at least 10240 to leave 10GB of space; this is especially true if the disk is shared. Use your own discretion to choose a pad based on the amount of space you have available and the amount of space you might expect others to need.
+To ensure the specified disk is not overloaded by this process, one should specify no integer that is less than 0, and should consider using at least 10240 to leave at least 10GB of space; this is especially true if the disk is shared. Use your own discretion to choose a pad based on the amount of space you have available and the amount of space you might expect others to need.
 
-**NOTE: it is important to not include any additional forward slashes in the above steps **
-
+6) DESCRIBING INPUT AND OUTPUT PATHS:
 If all is properly setup, these 3 commands should initiate the pipeline. This will run over each subject in the specified directory. The outputs of pipeline stages 1 through 4 will be stored in the directories /TO/sub_##/1o/ - /TO/sub_##/4o/ (short for Test Outputs 1 - 4), and tractography data will be stored in /TO/sub_##/Xo/ .
 
-It is crucial that input data in /SubjDir/ are named and stored appropriately i.e., with the form and path specified as follows:
-/SubjDir/sub_##/dwi/sub-##_acq-dir107_AP_dwi.nii.gz , /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.nii.gz , /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.bval , and /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.bvec , which should be the default bids format;
-Where /SubjDir is an arbitrarily named subject directory and ## is a 2 digit number specifying the subject ID. The list must start at 01 and increase incrementally. AP refers to the Anterior Posterior principal encoding direction and PA to its reverse; the bval and bvec files are sourced from the posterior-anterior encoding direction in this pipeline (but theoretically can be sourced from either).
+**It is crucial that input data in /SubjDir/ are named and stored appropriately i.e., with the form and path specified as follows:
+/SubjDir/sub_##/dwi/sub-##_acq-dir107_AP_dwi.nii.gz , /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.nii.gz , /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.bval , and /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.bvec , and /SubjDir/sub_##/anat/sub-##_T1w.nii.gz which should be the default bids format path and file name specification;
+Where /SubjDir is an arbitrarily named subject directory and ## is a 2 digit number specifying the subject ID. The subject directory should contain subject directories start at 01 [i.e., sub_01] and increase incrementally [sub_02 , sub_03 ,...]. AP refers to the Anterior Posterior principal encoding direction and PA to its reverse; the bval and bvec files are sourced from the posterior-anterior encoding direction in this pipeline (but theoretically can be sourced from either).
 *This pipeline does not handle data that have been collected in the RL-LR reverse phase encoding acquisition regime*
 
-The user can specify an arbitrary range of subjects to run the pipeline over by using the spec_* runners i.e., (spec_longRunner.sh , spec_short_RunnerL.sh or spec_NoTract_RunnerL.sh) with the same arguments as seen above with the addition of two arguments at the end, the first being the first subject number in the desired range and the second being the last. An example is given below:
+7) CALLING THE PIPELINE TO RUN OVER A SPECIFIED RANGE OF SUBJECTS
+The user can specify an arbitrary range of subjects to run the pipeline over by using the spec_* runners i.e., (spec_longRunner.sh , spec_short_RunnerL.sh or spec_NoTract_RunnerL.sh) with the same arguments as seen above with the addition of two arguments at the end, the first being the first subject number in the desired range and the second being the last. Examples are given below:
 
 ./spec_longRunner.sh /SubjDir /TO /Mount 0 1 10 ; which will run the pipeline for subjects 1 through 10 storing their outputs in /TO/sub_##/* . To run one subject only one can specify the following:
 
 ./spec_longRunner.sh /SubjDir /TO /Mount 0 2 2 ; which will run the pipeline for only subject 2.
 
-NOTE: IF YOU MANUALLY INTERRUPT THE PIPELINE YOU MAY EXPERIENCE ERRORS ATTEMPTING TO RESTART IT. THIS CAN BE RESOLVED BY RESTARTING THE DOCKER CONTAINER WITH `exit` AND RERUNNING THE "RUN" COMMAND ABOVE. THE RAMIFICATIONS OF RESTARTING THE DOCKER CONTAINER IN THE MIDDLE OF LARGE PROCESSING JOBS HAS NOT BEEN FULLY TESTED. The subject data that have been processed and exported to the specified output directory should not be lost as a result.
+NOTE: IF YOU MANUALLY INTERRUPT THE PIPELINE YOU MAY EXPERIENCE ERRORS ATTEMPTING TO RESTART IT. THIS CAN BE RESOLVED BY RESTARTING THE DOCKER CONTAINER WITH `exit` AND RERUNNING THE "RUN" COMMAND ABOVE (step 4). THE RAMIFICATIONS OF RESTARTING THE DOCKER CONTAINER IN THE MIDDLE OF LARGE PROCESSING JOBS HAS NOT BEEN FULLY TESTED. The subject data that have been processed and exported to the specified output directory should not be lost as a result unless you have opted to use one of the runners that is not 'long' i.e., with the word long in it or ending with 'L'. A list of all runner scripts is:
+short_RunnerL.sh
+NoTract_RunnerL.sh
+long_Runner.sh
+spec_short_RunnerL.sh
+spec_NoTract_RunnerL.sh
+spec_longRunner.sh
+************The above scripts are the recommended scripts to use*****************************
+mini_Runner.sh
+short_Runner.sh
+runner_NoTract.sh
 
+8) DISK SPACE REQUIREMENTS AND RUNTIME BREAKDOWN, GPU REQUIREMENTS/DEPENDENCY
 The amount of disk space needed per subject is approximately : 9GB. Ultimately ~6GB are stored in the output directories. If using long_Runner.sh, the amount of space needed is 6GB per subject + 3GB.
 
 The estimated run time from denoising to the completion of tractography using FSL's Xtract i.e., the whole pipeline [while utilizing an NVIDIA 1070TI graphics card] is : 4hrs50minutes per subject
@@ -105,19 +128,18 @@ xtract* [FSL]           ~2hours15minutes/subject [probabalistic tractography met
 Pipeline total runtime = ~4hrs50minutes/subject
 Short pipeline total runtime = ~1 hour/subject
 
-Full pipeline omitting Xtract total runtime (runner_NoTract.sh) = ~2hrs30minutes/subject
+9) REDUCED PIPELINE RUNNER DESCRIPTIONS
+Full pipeline omitting 'Xtract' total runtime (NoTract_RunnerL.sh or spec_NoTract_RunnerL.sh or runner_NoTract.sh) = ~2hrs30minutes/subject
 
 long_Runner.sh runtime is similar to mini_Runner.sh [4hrs50minutes] as it runs all of the same processes. The differece is that the long runner performs the whole pipeline on one subject at a time [for all subjects in the specified directory assuming there is disk space], whereas the mini runner runs each step of the pipeline for each subject in the directory before moving to the next step;
 
 Therefore, the long_Runner.sh script is more disk space efficient [~50% more efficient for a large number of subjects to be processed]
 
+One may choose to stop the pipeline short, i.e., before diffusor tensors are estimated by running ./short_Runner.sh with the same syntax as seen in the above example: Runtime is ~1hour/subject. This will stop the Pipeline after performing Eddy correction and QC report building i.e., after stage 2. (short_RunnerL.sh , spec_short_RunnerL.sh , short_Runner.sh)
+
+One may choose to stop the pipeline immediately before running tractography [in order to select a given set of structures to track before proceeding, or to break up the processes]. This is done by running NoTract_RunnerL.sh , spec_NoTract_RunnerL.sh , or runner_NoTract.sh with the same inputs as above. Runtime is ~2hrs20mins/subject.
+
 Runtime estimates were made while using an NVIDIA-1070-TI graphics card with 8GB of memory. Runtimes for eddy_cuda8.0,bedpostx_gpu, and xtract are affected by GPU memory availability.
-
-One may choose to stop the pipeline short, i.e., before diffusor tensors are estimated by running ./short_Runner.sh with the same syntax as seen in the above example: Runtime is ~1hour/subject. This will stop the Pipeline after performing Eddy correction and QC report building i.e., after stage 2.
-
-One may choose to stop the pipeline immediately before running tractography [in order to select a given set of structures to track before proceeding, or to break up the processes]. This is done by running runner_NoTract.sh with the same inputs as above. Runtime is ~2hrs20mins/subject.
-
-Note that the short and NoTract runner scripts can only be run in the wide format, therefore they are less efficient with respect to the disk space utilized while the pipeline runs.
 
 #############################################################################################################################################################################################################
 
