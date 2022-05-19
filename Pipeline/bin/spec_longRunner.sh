@@ -6,8 +6,10 @@ SubjectDirectory=$1
 Outputdir=$2
 Mount=$3
 desiredPad=$4
-arrSize=`ls $1 | wc -l`
-while [ "$(( i += 1 ))" -le $arrSize ]
+firstSub=$5
+lastSub=$6
+i=$firstSub
+while [[ $i -le $6 ]]
 do
 zi=$( printf '%02d' "$i")
 now=$(date +"%T")

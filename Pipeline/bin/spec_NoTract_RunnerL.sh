@@ -6,8 +6,10 @@ SubjectDirectory=$1
 Outputdir=$2
 Mount=$3
 desiredPad=$4
-arrSize=`ls $1 | wc -l`
-while [ "$(( i += 1 ))" -le $arrSize ]
+firstSub=$5
+lastSub=$6
+i=$firstSub
+while [[ $i -le $6 ]]
 do
 zi=$( printf '%02d' "$i")
 now=$(date +"%T")
@@ -42,11 +44,10 @@ cd /opt/Pipeline/Pipeline/Pipeline/bin
 ./L_script-Diff2MNI_transformations.sh $1 $zi #Perform nonlinear anatomical registration of diffusion data
 ./L_Tmp3clear.sh $1 $zi #Clear Stg3Tmp Folder
 ./L_Tmp4_2_Out.sh $1 $2 $zi #Move Temp outputs of interest to specified output directory #4 [Stg4Out]
-./L_xtract_gpu.sh $1 $2 $zi #Perform tractography algorithm and store in specified output directory #5 [XtractOutDir]
 ./L_Tmp4clear.sh $1 $zi #Clear Stg4Tmp Folder
 ./L_Pipelinereset.sh $1 $zi
 done
 now=$(date +"%T")
-echo "Pipeline complete at $now for $arrSize subjects, last subject is sub-$zi"
+echo "NoTract Pipeline complete at $now for $arrSize subjects, last subject is sub-$zi"
 
 
