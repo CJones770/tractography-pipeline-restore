@@ -1,4 +1,4 @@
-README - dwi-pipeline version 1.0.4d developed by Corey Jones - May 19th, 2022
+README - dwi-pipeline version 1.0.4d developed by Corey Jones - May 26th, 2022
 
 You should read this entire README file before attempting to install and run the docker container and pipeline
 
