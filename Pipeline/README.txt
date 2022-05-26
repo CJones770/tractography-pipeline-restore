@@ -1,23 +1,30 @@
 README - dwi-pipeline version 1.0.4d developed by Corey Jones - May 19th, 2022
 
-You should read this entire README file before attempting to run the docker container and pipeline
+You should read this entire README file before attempting to install and run the docker container and pipeline
 
-1) DESCRIPTION:
+1) 
+DESCRIPTION:
 This pipeline was developed to preprocess raw diffusion weighted image data of patients with Early Psychosis provided by the Human Connectome Project (HCP) to prepare them for probabalistic tractography.
 
 An independent, similar pipeline developed by the University of Washington is available on the HCP official website and on the U-Washington Github at either of the following links:
 
 https://github.com/Washington-University/HCPpipelines && https://www.humanconnectome.org/software/hcp-mr-pipelines
 
-Both (my and the official) pipelines rely on NVIDIA's CUDA toolkit for gpu acceleration/parallelization, and therefore to run this dwi-pipeline version 1.0.2d in a docker container as intended, nvidia's docker container runtime toolkit should be installed prior to starting the container if it has not been installed already. 
+Both (my and the official) pipelines rely on NVIDIA's CUDA toolkit for gpu acceleration/parallelization, and therefore to run this dwi-pipeline version 1.0.4d in a docker container as intended, nvidia's docker container runtime toolkit should be installed prior to starting the container if it has not been installed already. 
 
-2) NVIDIA-CONTAINER-RUNTIME INSTALLATION INSTRUCTIONS:
-This can be achieved by running  : 
-apt-get update && apt-get install nvidia-docker2 [for docker versions 19.03 or newer] see https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html for troubleshooting
+*Note that the current dockerized version of this pipeline relies on nvidia's cuda8.0 generation base image, which is available on dockerhub as nvidia/cuda:8.0-cudnn5-devel-ubuntu16.04 , and is notably no longer supported and nvidia therefore claims: "⚠ These tags [cuda versions, in this instance cuda:8.0-cudnn5-devel-ubuntu16.04] still exist and may contain critical vulnerabilities.
+Use at your own risk".* https://gitlab.com/nvidia/container-images/cuda/blob/master/doc/unsupported-tags.md
+
+The inclusion of this image is necessary to use GPU acceleration for FSL's eddy_cuda8.0 and 9.1 [https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/GPU ; https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/eddy/UsersGuide], which both rely on depreciated nvidia/cuda images; Excluding this feature would result in a significant increase in runtime, possibly on the order of several hours per subject
+
+2) 
+NVIDIA-CONTAINER-RUNTIME INSTALLATION INSTRUCTIONS:
+The runtime toolkit needed for the container and GPU to communicate can be installed by running  : 
+$ apt-get update && apt-get install nvidia-docker2 [for docker versions 19.03 or newer] see https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html for troubleshooting
 
 OR:
 
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+$ distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
       && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
       && curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
             sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
@@ -27,52 +34,61 @@ and subsequently restarting the docker daemon with sudo system (or systemtcl) do
 [you may need superuser/root priveleges to perform docker commands in general, and restarting the daemon will likely interrupt active processes in other containers if not kill them entirely]
 ** The above steps were pulled from the official Nvidia website at https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker **
 
-3) PULLING THE PIPELINE'S DOCKER IMAGE FROM DOCKERHUB:
-The necessary docker image to run this pipeline can be pulled from docker hub by calling $ sudo docker pull jonescorey/dwi-pipeline
+3) 
+PULLING THE PIPELINE'S DOCKER IMAGE FROM DOCKERHUB:
+The docker image of this pipeline can be pulled from docker hub by calling $ sudo docker pull jonescorey/dwi-pipeline
 
-This pipeline is designed to run in a docker container that mounts a subject directory and an output directory from the host machine as volumes in the container.
+This pipeline is designed to run in a docker container that mounts a subject directory and an output directory to the container from the host machine as volumes.
 
-4) RUNNING DOCKER CONTAINER AND MOUNTING LOCAL FILES TO IT: 
+4) 
+RUNNING DOCKER CONTAINER AND MOUNTING LOCAL FILES TO IT: 
 
 ** NOTE: it is important to not include any additional forward slashes in the following steps AND 
-** YOU SHOULD NOT MOUNT OR USE "/" OR ANY OTHER RESTRICTED DIRECTORIES AS INPUT OR OUTPUT DIRECTORIES UNLESS YOU KNOW WHAT YOU ARE DOING AND HAVE ACCESS TO THEM **
+** YOU SHOULD NOT MOUNT OR USE "/" OR ANY OTHER RESTRICTED DIRECTORIES AS INPUT OR OUTPUT DIRECTORIES UNLESS YOU KNOW WHAT YOU ARE DOING AND CAN ACCESS THEM **
 
 File mounting is performed while calling 'docker run' on the docker image e.g.,
 If the image is tagged "dwi-pipeline:latest", one may mount their directories by running the following command:
 
-docker run -it --rm --runtime=nvidia -v /Path/to/local_Subject_Data:/Path/toSubjData/inContainer -v /Path/to/local_OutputFolder:/Outputs --name choose_name_for_container jonescorey/dwi-pipeline:latest
+docker run -it --rm --runtime=nvidia -v /Path/to/local_Subject_Directory:/Container/SubjDir -v /Path/to/local_OutputFolder:/Container/Outputs --name container_name jonescorey/dwi-pipeline:latest
 
-where the -it option runs the container in an interactive terminal, --rm declares the container shall be removed when stopped, runtime=nvidia enables the CUDA container runtime, -v specifies each volume to be mounted from the host machine to the container, the name of the container is arbitrary, and the final input is the image name with its tag i.e., jonescorey/dwi-pipeline:latest or equivalent that is stored on the host machine.
+where the -it option runs the container in an interactive terminal, --rm declares the container shall be removed when stopped, runtime=nvidia enables the CUDA container runtime, -v specifies each volume to be mounted from the host machine to the container, the name of the container is arbitrary, and the final input is the image name with its tag i.e., jonescorey/dwi-pipeline:latest or equivalent that is stored on the host machine; This is the image that the container will be built with.
 
-5) PIPELINE RUNNER SCRIPTS: [READ IN FULL BEFORE DECIDING WHICH SCRIPT IS BEST SUITED FOR YOU]
-To run the pipeline in full one must call the 'long_Runner.sh' or 'mini_Runner.sh' script located in the Pipeline's bin, which exists in the container path /opt/Pipeline/Pipeline/Pipeline/bin/ ; 
-i.e., once in the container's interactive terminal, one must navigate to the directory with $ cd /opt/Pipeline/Pipeline/Pipeline/bin/ ; then run $ ./long_Runner.sh (or mini_Runner.sh) with the following inputs:
+5) 
+PIPELINE RUNNER SCRIPTS: [READ IN FULL BEFORE DECIDING WHICH SCRIPT IS BEST SUITED FOR YOU]
+To run the pipeline in full one must call the 'long_Runner.sh' script located in the Pipeline's bin, which exists in the container path /opt/Pipeline/Pipeline/Pipeline/bin/ ; 
+i.e., once in the container's interactive terminal, one must navigate to the directory with $ cd /opt/Pipeline/Pipeline/Pipeline/bin/ ; then run $ ./long_Runner.sh with the following arguments:
 
-/Path/toSubjData/inContainer /Outputs /Path/to/CurrentMount 102400 [or other integer representing the amount of space in MB to leave open on the disk after running the pipeline]
+/Container/SubjDir /Container/Outputs /Path/to/CurrentMount 102400 [or other integer representing the amount of space in MB to leave open on the disk after running the pipeline]
 
 working examples of this syntax from building the docker container to executing the main run script are below:
 
-1: #Run the container, mount your subject and output directories, name the container, and choose the appropriate image:tag to build it from [same as what is described in step 4] 
-sudo docker run -it --rm --runtime=nvidia -v /home/corey/P_samples:/SubjDir -v /home/corey/pipeline-test-outputs/TO:/TO --name dwi-pipeline jonescorey/dwi-pipeline:experimental
+1: #Run the container, mount your subject and output directories, name the container, and choose the appropriate image:tag to build it with [same as described in step 4] 
+sudo docker run -it --rm --runtime=nvidia -v /home/corey/P_samples:/SubjDir -v /home/corey/pipeline-test-outputs/TO:/TO --name dwi-pipeline jonescorey/dwi-pipeline:latest
 
-2: #change directories to access the pipeline's scripts
+2: #change directories to access the pipeline's scripts*
 cd /opt/Pipeline/Pipeline/Pipeline/bin 
 
-3: #Run a runner script of your choice: long_Runner.sh mini_Runner.sh runner_NoTract.sh or short_Runner.sh; or if you want to run for a select range of subjects e.g., 1-10 or just a specific subject use one of the following: spec_longRunner.sh spec_short_RunnerL.sh spec_NoTract_RunnerL.sh (see the section preceding References for their descriptions) The syntax for the first 4 specified scripts is:
+3: #Run a runner script of your choice: long_Runner.sh , shortRunnerL.sh , NoTract_RunnerL.sh  ; if you want to run for a select range of subjects e.g., 1-10 or just a specific subject use one of the following: spec_longRunner.sh spec_short_RunnerL.sh spec_NoTract_RunnerL.sh (see section 7 for complete list) The syntax for the first 4 specified scripts i.e., running all subjects in /SubjDir is:
 
 ./long_Runner.sh /SubjDir /TO /MountName/For/DiskSpaceCheck 102400 [where 102400 is an exemplary minimum pad one may specify in MBs to remain open on the disk after the pipeline runs]
 
-To ensure the specified disk is not overloaded by this process, one should specify no integer that is less than 0, and should consider using at least 10240 to leave at least 10GB of space; this is especially true if the disk is shared. Use your own discretion to choose a pad based on the amount of space you have available and the amount of space you might expect others to need.
+To ensure the specified disk is NOT overloaded by this process, one should specify NO integer that is less than 0, and one should consider using at least >= 10240(0) to leave at least 10(0)GB of space; this is especially true if the disk is shared. Use your own discretion to choose a pad based on the amount of space you have available and the amount of space you might expect others to need.
 
-6) DESCRIBING INPUT AND OUTPUT PATHS:
+6) 
+DESCRIBING INPUT AND OUTPUT PATHS:
 If all is properly setup, these 3 commands should initiate the pipeline. This will run over each subject in the specified directory. The outputs of pipeline stages 1 through 4 will be stored in the directories /TO/sub_##/1o/ - /TO/sub_##/4o/ (short for Test Outputs 1 - 4), and tractography data will be stored in /TO/sub_##/Xo/ .
 
-**It is crucial that input data in /SubjDir/ are named and stored appropriately i.e., with the form and path specified as follows:
+***It is crucial that input data in /SubjDir/ are named and stored appropriately i.e., with the form and path specified as follows:
 /SubjDir/sub_##/dwi/sub-##_acq-dir107_AP_dwi.nii.gz , /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.nii.gz , /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.bval , and /SubjDir/sub_##/dwi/sub-##_acq-dir107_PA_dwi.bvec , and /SubjDir/sub_##/anat/sub-##_T1w.nii.gz which should be the default bids format path and file name specification;
-Where /SubjDir is an arbitrarily named subject directory and ## is a 2 digit number specifying the subject ID. The subject directory should contain subject directories start at 01 [i.e., sub_01] and increase incrementally [sub_02 , sub_03 ,...]. AP refers to the Anterior Posterior principal encoding direction and PA to its reverse; the bval and bvec files are sourced from the posterior-anterior encoding direction in this pipeline (but theoretically can be sourced from either).
-*This pipeline does not handle data that have been collected in the RL-LR reverse phase encoding acquisition regime*
+Where /SubjDir is an arbitrarily named subject directory and ## is a 2 digit number specifying the subject ID. The subject directory should contain subject directories starting at 01 [i.e., sub_01] and increase incrementally [sub_02 , sub_03 ,...]. These directories should contain the above listed files/data .***
 
-7) CALLING THE PIPELINE TO RUN OVER A SPECIFIED RANGE OF SUBJECTS
+AP refers to the Anterior Posterior principal encoding direction and PA to its reverse; 
+*the bval and bvec files are sourced from the posterior-anterior encoding direction in this pipeline* (but theoretically can be sourced from either).
+*The current version of this pipeline does not handle data that have been acquired in the RL-LR reverse phase encoding acquisition regime* 
+*In future versions one may be able to select either AP-PA or LR-RL and run subject groups in batches accordingly*
+
+7) 
+CALLING THE PIPELINE TO RUN OVER A SPECIFIED RANGE OF SUBJECTS
 The user can specify an arbitrary range of subjects to run the pipeline over by using the spec_* runners i.e., (spec_longRunner.sh , spec_short_RunnerL.sh or spec_NoTract_RunnerL.sh) with the same arguments as seen above with the addition of two arguments at the end, the first being the first subject number in the desired range and the second being the last. Examples are given below:
 
 ./spec_longRunner.sh /SubjDir /TO /Mount 0 1 10 ; which will run the pipeline for subjects 1 through 10 storing their outputs in /TO/sub_##/* . To run one subject only one can specify the following:
@@ -91,7 +107,8 @@ mini_Runner.sh
 short_Runner.sh
 runner_NoTract.sh
 
-8) DISK SPACE REQUIREMENTS AND RUNTIME BREAKDOWN, GPU REQUIREMENTS/DEPENDENCY
+8) 
+DISK SPACE REQUIREMENTS AND RUNTIME BREAKDOWN, GPU REQUIREMENTS/DEPENDENCY
 The amount of disk space needed per subject is approximately : 9GB. Ultimately ~6GB are stored in the output directories. If using long_Runner.sh, the amount of space needed is 6GB per subject + 3GB.
 
 The estimated run time from denoising to the completion of tractography using FSL's Xtract i.e., the whole pipeline [while utilizing an NVIDIA 1070TI graphics card] is : 4hrs50minutes per subject
@@ -128,7 +145,8 @@ xtract* [FSL]           ~2hours15minutes/subject [probabalistic tractography met
 Pipeline total runtime = ~4hrs50minutes/subject
 Short pipeline total runtime = ~1 hour/subject
 
-9) REDUCED PIPELINE RUNNER DESCRIPTIONS
+9) 
+REDUCED PIPELINE RUNNER DESCRIPTIONS
 Full pipeline omitting 'Xtract' total runtime (NoTract_RunnerL.sh or spec_NoTract_RunnerL.sh or runner_NoTract.sh) = ~2hrs30minutes/subject
 
 long_Runner.sh runtime is similar to mini_Runner.sh [4hrs50minutes] as it runs all of the same processes. The differece is that the long runner performs the whole pipeline on one subject at a time [for all subjects in the specified directory assuming there is disk space], whereas the mini runner runs each step of the pipeline for each subject in the directory before moving to the next step;
@@ -144,6 +162,9 @@ Runtime estimates were made while using an NVIDIA-1070-TI graphics card with 8GB
 #############################################################################################################################################################################################################
 
 References:
+General pipeline process sequencing:
+Maximov, Ivan I., Dag Alnæs, and Lars T. Westlye. "Towards an optimised processing pipeline for diffusion magnetic resonance imaging data: Effects of artefact corrections on diffusion metrics and their age associations in UK Biobank." Human Brain Mapping 40.14 (2019): 4146-4162.
+
 dwidenoise: [pulled from https://mrtrix.readthedocs.io/en/latest/reference/commands/dwidenoise.html]
 Veraart, J.; Novikov, D.S.; Christiaens, D.; Ades-aron, B.; Sijbers, J. & Fieremans, E. Denoising of diffusion MRI using random matrix theory. NeuroImage, 2016, 142, 394-406, doi: 10.1016/j.neuroimage.2016.08.016
 
