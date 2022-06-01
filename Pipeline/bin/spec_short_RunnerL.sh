@@ -9,7 +9,7 @@ desiredPad=$4
 firstSub=$5
 lastSub=$6
 i=$firstSub
-while [[ $i -le $6 ]]
+while [ "$(( i += 1 ))" -le $6 ]
 do
 zi=$( printf '%02d' "$i")
 now=$(date +"%T")

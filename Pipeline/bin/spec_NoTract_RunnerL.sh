@@ -9,7 +9,7 @@ desiredPad=$4
 firstSub=$5
 lastSub=$6
 i=$firstSub
-while [[ $i -le $6 ]]
+while [ "$(( i += 1 ))" -le $6 ]
 do
 zi=$( printf '%02d' "$i")
 now=$(date +"%T")
@@ -48,6 +48,6 @@ cd /opt/Pipeline/Pipeline/Pipeline/bin
 ./L_Pipelinereset.sh $1 $zi
 done
 now=$(date +"%T")
-echo "NoTract Pipeline complete at $now for $arrSize subjects, last subject is sub-$zi"
+echo "NoTract Pipeline complete at $now for $arrSize subjects, last subject was sub-$zi"
 
 
