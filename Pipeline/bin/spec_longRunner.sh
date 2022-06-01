@@ -8,7 +8,7 @@ Mount=$3
 desiredPad=$4
 firstSub=$5
 lastSub=$6
-i=$firstSub
+i=$firstSub-1
 while [ "$(( i += 1 ))" -le $6 ]
 do
 zi=$( printf '%02d' "$i")
