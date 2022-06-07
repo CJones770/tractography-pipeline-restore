@@ -15,10 +15,10 @@ echo "couldn't initialize directories, not enough space to run the pipeline for 
 exit 1
 fi 
 echo "Initializing Directories for subject $zi."
-mkdir /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp
-mkdir /opt/Pipeline/Pipeline/Pipeline/Stg2Tmp
-mkdir /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp
-mkdir /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp
+#mkdir /opt/Pipeline/Pipeline/Pipeline/Stg1Tmp
+#mkdir /opt/Pipeline/Pipeline/Pipeline/Stg2Tmp
+#mkdir /opt/Pipeline/Pipeline/Pipeline/Stg3Tmp
+#mkdir /opt/Pipeline/Pipeline/Pipeline/Stg4Tmp
 #The below commented are not needed to run in container given that the outputs directories must be stored as volumes within the container;
 #Therefore they must already exist on the host machine
 #mkdir /opt/Pipeline/Pipeline/Pipeline/$1
