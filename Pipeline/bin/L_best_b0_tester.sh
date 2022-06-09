@@ -26,15 +26,13 @@ if [ $ResStoreAP -ge 0 ];
 then
 bestAPb0res=/opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tAP_b0_"$xi"_rsqr.nii.gz
 #rm $bestAP_b0
-bestAP_b0=/opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tAP_b0_"$xi".nii.gz	
-echo "$bestAP_b0"
+bestAP_b0=/opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tAP_b0_"$xi".nii.gz
 fi
 if [ $ResStorePA -ge 0 ];
 then
 bestPAb0res=/opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tPA_b0_"$xi"_rsqr.nii.gz
 #rm $bestPA_b0
 bestPA_b0=/opt/Pipeline/Pipeline/Pipeline/Stg1Tmp/sub_$zi/tPA_b0_"$xi".nii.gz
-echo "$bestPA_b0"
 fi
 done
 exec > $2/sub_"$zi"/1o/bestb0log.txt 2>&1

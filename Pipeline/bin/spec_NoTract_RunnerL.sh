@@ -48,6 +48,6 @@ cd /opt/Pipeline/Pipeline/Pipeline/bin
 ./L_Pipelinereset.sh $1 $zi
 done
 now=$(date +"%T")
-echo "NoTract Pipeline complete at $now for $arrSize subjects, last subject was sub-$zi"
+echo "NoTract Pipeline complete at $now for specified subjects, last subject was sub-$zi"
 
 
